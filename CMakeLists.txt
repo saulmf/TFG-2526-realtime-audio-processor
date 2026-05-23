@@ -7,6 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # JUCE is added as a subdirectory (git submodule at ./JUCE)
 add_subdirectory(JUCE)
 
+juce_add_binary_data(AppTranslations
+        HEADER_NAME AppTranslations.h
+        NAMESPACE   AppTranslations
+        SOURCES     resources/translations/es.txt
+)
+
 juce_add_gui_app(RealtimeAudioProcessor
         PRODUCT_NAME "RealtimeAudioProcessor"
         COMPANY_NAME "Saul Martin"
@@ -16,6 +22,8 @@ juce_add_gui_app(RealtimeAudioProcessor
 # All source files
 target_sources(RealtimeAudioProcessor PRIVATE
         src/main.cpp
+        src/ApplicationController.h
+        src/ApplicationController.cpp
 
         src/audio/AudioEngine.h
         src/audio/AudioEngine.cpp
@@ -51,8 +59,23 @@ target_sources(RealtimeAudioProcessor PRIVATE
 
         src/gui/MainWindow.h
         src/gui/MainWindow.cpp
+        src/gui/AppMenuBar.h
+        src/gui/AppMenuBar.cpp
+        src/gui/LevelMeter.h
+        src/gui/LevelMeter.cpp
+        src/gui/StatusBar.h
+        src/gui/StatusBar.cpp
+        src/gui/EffectUIDescriptor.h
+        src/gui/UIRegistry.h
+        src/gui/UIRegistry.cpp
+        src/gui/TransportBar.h
+        src/gui/TransportBar.cpp
+        src/gui/EffectBrowserPanel.h
+        src/gui/EffectBrowserPanel.cpp
         src/gui/EffectChainPanel.h
         src/gui/EffectChainPanel.cpp
+        src/gui/PedalCard.h
+        src/gui/PedalCard.cpp
 )
 
 # JUCE modules used by this project
@@ -64,6 +87,7 @@ target_compile_definitions(RealtimeAudioProcessor PRIVATE
 )
 
 target_link_libraries(RealtimeAudioProcessor PRIVATE
+        AppTranslations
         juce::juce_audio_basics
         juce::juce_audio_devices
         juce::juce_audio_formats

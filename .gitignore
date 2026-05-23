@@ -37,3 +37,6 @@ desktop.ini
 # Presets saved during development/testing
     # *.xml
     # *.json
+
+# Documentation files
+docs/
