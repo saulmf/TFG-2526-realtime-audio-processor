@@ -54,6 +54,9 @@ public:
     void setTargetSlot(int slot) noexcept { m_targetSlot = slot; }
 
     void mouseDown(const juce::MouseEvent &e) override {
+        if (m_controller.isRunning())
+            return;
+
         for (const auto &group: m_groups) {
             for (const auto &card: group.cards) {
                 if (card.bounds.contains(e.getPosition())) {
@@ -217,6 +220,12 @@ EffectBrowserPanel::EffectBrowserPanel(ApplicationController &controller,
 }
 
 void EffectBrowserPanel::toggleExpanded() {
+    if (!m_isExpanded && m_controller.isRunning()) {
+        if (onErrorMessage)
+            onErrorMessage(TRANS("Stop the audio session before adding effects to the chain."));
+        return;
+    }
+
     m_isExpanded = !m_isExpanded;
 
     // Opening via the button always appends (no specific target slot)
@@ -230,6 +239,9 @@ void EffectBrowserPanel::toggleExpanded() {
 }
 
 void EffectBrowserPanel::expandForSlot(int slotIndex) {
+    if (m_controller.isRunning())
+        return;
+
     if (!m_isExpanded)
         toggleExpanded();
 

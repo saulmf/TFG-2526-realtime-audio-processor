@@ -36,6 +36,9 @@ public:
     // Called when the user clicks an empty slot - slot index is passed
     std::function<void(int slotIndex)> onEmptySlotClicked;
 
+    // Fired with an error message when a chain modification is blocked.
+    std::function<void(const juce::String &)> onErrorMessage;
+
     // DragAndDropTarget
     bool isInterestedInDragSource(const SourceDetails &details) override;
 

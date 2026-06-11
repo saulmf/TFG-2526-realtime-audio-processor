@@ -51,10 +51,8 @@ TransportBar::TransportBar(ApplicationController &controller)
                 m_outputLevelMeter.setActive(true);
             } else {
                 DBG("[TransportBar] Start failed: " + error);
-                juce::AlertWindow::showMessageBoxAsync(
-                    juce::MessageBoxIconType::WarningIcon,
-                    TRANS("Cannot start session"),
-                    TRANS(error.toRawUTF8()));
+                if (onErrorMessage)
+                    onErrorMessage(TRANS(error.toRawUTF8()));
             }
         } else {
             m_controller.stop();

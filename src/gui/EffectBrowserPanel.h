@@ -44,6 +44,9 @@ public:
     // Called after an effect thumbnail is clicked and addEffect() succeeds.
     std::function<void()> onEffectAdded;
 
+    // Fired with an error message when an action is blocked (e.g. session is running).
+    std::function<void(const juce::String &)> onErrorMessage;
+
     static constexpr int k_collapsedHeight = 40;
 
 private:

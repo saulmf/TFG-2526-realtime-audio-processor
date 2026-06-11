@@ -70,9 +70,15 @@ void EffectChainPanel::refreshChain() {
 
         const int capturedIndex = i;
         card->onRemoveRequested = [this, capturedIndex] {
+            if (m_controller.isRunning()) {
+                if (onErrorMessage)
+                    onErrorMessage(TRANS("Stop the audio session before modifying the effect chain."));
+                return;
+            }
             m_controller.removeEffect(capturedIndex);
             refreshChain();
         };
+
 
         addAndMakeVisible(*card);
         m_cards.push_back(std::move(card));
@@ -107,17 +113,18 @@ void EffectChainPanel::paint(juce::Graphics &g) {
 
 void EffectChainPanel::paintEmptySlot(juce::Graphics &g, int slotIndex) const {
     const auto bounds = getSlotBounds(slotIndex).toFloat();
+    const bool running = m_controller.isRunning();
 
     juce::Path border;
     border.addRoundedRectangle(bounds.reduced(1.0f), 8.0f);
 
     const float dashes[]{6.0f, 4.0f};
-    g.setColour(juce::Colours::grey.withAlpha(0.25f));
+    g.setColour(juce::Colours::grey.withAlpha(running ? 0.10f : 0.25f));
     g.strokePath(border,
                  juce::PathStrokeType(1.0f),
                  juce::AffineTransform());
 
-    g.setColour(juce::Colours::grey.withAlpha(0.2f));
+    g.setColour(juce::Colours::grey.withAlpha(running ? 0.08f : 0.20f));
     g.setFont(juce::Font(22.0f, juce::Font::bold));
     g.drawText("+", bounds, juce::Justification::centred);
 
@@ -177,6 +184,9 @@ void EffectChainPanel::paintArrows(juce::Graphics &g) const {
 // Mouse interaction
 
 void EffectChainPanel::mouseDown(const juce::MouseEvent &e) {
+    if (m_controller.isRunning())
+        return;
+
     const int numEffects = m_controller.getNumEffects();
     const int slot = getSlotAt(e.getPosition());
 
@@ -207,10 +217,17 @@ void EffectChainPanel::itemDragExit(const SourceDetails &) {
 }
 
 void EffectChainPanel::itemDropped(const SourceDetails &details) {
+    m_dragOverSlot = -1;
+
+    if (m_controller.isRunning()) {
+        if (onErrorMessage)
+            onErrorMessage(TRANS("Stop the audio session before modifying the effect chain."));
+        repaint();
+        return;
+    }
+
     const int fromIndex = details.description;
     const int toSlot = getSlotAt(details.localPosition);
-
-    m_dragOverSlot = -1;
 
     if (toSlot >= 0
         && toSlot < m_controller.getNumEffects()

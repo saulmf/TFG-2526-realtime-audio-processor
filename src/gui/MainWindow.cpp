@@ -5,6 +5,49 @@
 #include "EffectBrowserPanel.h"
 #include "StatusBar.h"
 
+class NotificationPopup : public juce::Component, private juce::Timer {
+public:
+    NotificationPopup() {
+        m_label.setJustificationType(juce::Justification::centred);
+        m_label.setColour(juce::Label::textColourId, juce::Colours::white);
+        m_label.setInterceptsMouseClicks(false, false);
+        addAndMakeVisible(m_label);
+        setInterceptsMouseClicks(false, false);
+        setVisible(false);
+    }
+
+    void show(const juce::String &msg, int durationMs = 3000) {
+        m_label.setText(msg, juce::dontSendNotification);
+        setVisible(true);
+        toFront(false);
+        stopTimer();
+        startTimer(durationMs);
+        repaint();
+    }
+
+    void paint(juce::Graphics &g) override {
+        auto bounds = getLocalBounds().toFloat().reduced(1.0f);
+        g.setColour(juce::Colour(0xF2252535));
+        g.fillRoundedRectangle(bounds, 8.0f);
+        g.setColour(juce::Colour(0xFFFBBF24));
+        g.drawRoundedRectangle(bounds, 8.0f, 1.5f);
+    }
+
+    void resized() override {
+        m_label.setBounds(getLocalBounds().reduced(12, 0));
+    }
+
+private:
+    void timerCallback() override {
+        stopTimer();
+        setVisible(false);
+    }
+
+    juce::Label m_label;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NotificationPopup)
+};
+
 class MainContentComponent : public juce::Component {
 public:
     MainContentComponent(ApplicationController &controller, UIRegistry &uiRegistry)
@@ -20,6 +63,13 @@ public:
         addAndMakeVisible(m_statusBar);
 
         m_browserPanel.toFront(false);
+        addChildComponent(m_errorPopup);
+
+        // Route error messages from all child components to the notification popup
+        auto showError = [this](const juce::String &msg) { m_errorPopup.show(msg); };
+        m_transportBar.onErrorMessage  = showError;
+        m_browserPanel.onErrorMessage  = showError;
+        m_chainPanel.onErrorMessage    = showError;
 
         // Rebuild chain display after new chain / preset load from menu
         m_menuBar.onChainChanged = [this] {
@@ -79,6 +129,13 @@ public:
 
         // Chain panel fills the space between the transport bar and the browser header
         m_chainPanel.setBounds(0, menuH + transportH, w, h - menuH - transportH - browserH - statusBarH);
+
+        // Notification popup: centred horizontally in the chain panel area
+        constexpr int popupW = 420;
+        constexpr int popupH = 54;
+        const int chainTop = menuH + transportH;
+        const int chainH = h - menuH - transportH - browserH - statusBarH;
+        m_errorPopup.setBounds((w - popupW) / 2, chainTop + (chainH - popupH) / 2, popupW, popupH);
     }
 
 private:
@@ -87,6 +144,7 @@ private:
     EffectChainPanel m_chainPanel;
     EffectBrowserPanel m_browserPanel;
     StatusBar m_statusBar;
+    NotificationPopup m_errorPopup;
     juce::TooltipWindow m_tooltipWindow{this, 500};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)

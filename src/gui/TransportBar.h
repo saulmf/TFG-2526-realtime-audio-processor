@@ -32,6 +32,9 @@ public:
     // Wired by the parent (MainWindow content component) to notify siblings when the session starts or stops.
     std::function<void()> onSessionStateChanged;
 
+    // Fired with an error message when start() fails (no device selected, device error, etc.).
+    std::function<void(const juce::String &)> onErrorMessage;
+
     static constexpr int k_height = 84;
 
 private:
