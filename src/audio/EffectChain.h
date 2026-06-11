@@ -105,8 +105,9 @@ public:
      * Reconstructs the chain from a previously serialised ValueTree.
      * The EffectFactory is used to instantiate each effect by type ID.
      * Completely replaces the current chain contents.
+     * Returns the type IDs of any effects that were skipped because they were not recognised by the factory.
      */
-    void setState(const juce::ValueTree &state, const class EffectFactory &factory);
+    juce::StringArray setState(const juce::ValueTree &state, const class EffectFactory &factory);
 
 private:
     bool isValidIndex(int index) const;

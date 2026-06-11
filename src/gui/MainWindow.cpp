@@ -67,6 +67,7 @@ public:
 
         // Route error messages from all child components to the notification popup
         auto showError = [this](const juce::String &msg) { m_errorPopup.show(msg); };
+        m_menuBar.onErrorMessage       = showError;
         m_transportBar.onErrorMessage  = showError;
         m_browserPanel.onErrorMessage  = showError;
         m_chainPanel.onErrorMessage    = showError;

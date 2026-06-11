@@ -135,11 +135,13 @@ juce::ValueTree EffectChain::getState() const {
     return chainState;
 }
 
-void EffectChain::setState(const juce::ValueTree &state,
-                           const EffectFactory &factory) {
+juce::StringArray EffectChain::setState(const juce::ValueTree &state,
+                                        const EffectFactory &factory) {
+    juce::StringArray skipped;
+
     if (!state.hasType(k_chainTag)) {
         jassertfalse;
-        return;
+        return skipped;
     }
 
     // Clear the current chain before rebuilding
@@ -159,8 +161,8 @@ void EffectChain::setState(const juce::ValueTree &state,
         auto effect = factory.create(typeId);
 
         if (effect == nullptr) {
-            // Unknown type - skip gracefully rather than crashing (handles incorrect preset files)
             DBG("EffectChain::setState - unknown effect type: " + typeId);
+            skipped.add(typeId);
             continue;
         }
 
@@ -179,6 +181,8 @@ void EffectChain::setState(const juce::ValueTree &state,
 
         m_effects.push_back(std::move(effect));
     }
+
+    return skipped;
 }
 
 // Private helpers

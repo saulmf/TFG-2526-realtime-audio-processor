@@ -28,10 +28,13 @@ public:
      * Loads a preset from an XML file and fully reconstructs the chain.
      * The existing chain contents are replaced.
      * Returns true on success, false if the file is missing or malformed.
+     * On success, outSkippedTypeIds is populated with any type IDs that were
+     * not recognised by the factory and therefore skipped.
      */
     bool loadPreset(EffectChain &chain,
                     const EffectFactory &factory,
-                    const juce::File &file) const;
+                    const juce::File &file,
+                    juce::StringArray &outSkippedTypeIds) const;
 
 private:
     static constexpr const char *k_presetTag = "Preset";

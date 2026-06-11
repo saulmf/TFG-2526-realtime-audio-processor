@@ -112,8 +112,12 @@ public:
     /** Saves the current chain state to an XML file. Returns true on success. */
     bool savePreset(const juce::File &file);
 
-    /** Loads and restores a chain state from an XML file. Returns true on success. */
-    bool loadPreset(const juce::File &file);
+    /**
+     * Loads and restores a chain state from an XML file. Returns true on success.
+     * outSkippedTypeIds is populated with any effect type IDs that were present in the
+     * file but not recognised by the factory (and therefore skipped).
+     */
+    bool loadPreset(const juce::File &file, juce::StringArray &outSkippedTypeIds);
 
 private:
     AudioEngine &m_audioEngine;

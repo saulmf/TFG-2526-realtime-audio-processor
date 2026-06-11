@@ -138,12 +138,8 @@ void AppMenuBar::handleSavePreset() {
             if (result.getFullPathName().isEmpty())
                 return;
 
-            if (!m_controller.savePreset(result.withFileExtension("xml"))) {
-                juce::AlertWindow::showMessageBoxAsync(
-                    juce::MessageBoxIconType::WarningIcon,
-                    TRANS("Error"),
-                    TRANS("Failed to save preset."));
-            }
+            if (!m_controller.savePreset(result.withFileExtension("xml")))
+                if (onErrorMessage) onErrorMessage(TRANS("Failed to save preset."));
         });
 }
 
@@ -161,13 +157,29 @@ void AppMenuBar::handleLoadPreset() {
             if (result.getFullPathName().isEmpty())
                 return;
 
-            if (m_controller.loadPreset(result)) {
+            juce::StringArray skipped;
+            if (m_controller.loadPreset(result, skipped)) {
                 if (onChainChanged) onChainChanged();
+
+                if (!skipped.isEmpty()) {
+                    const juce::String list = skipped.joinIntoString(", ");
+                    juce::AlertWindow::showOkCancelBox(
+                        juce::MessageBoxIconType::WarningIcon,
+                        TRANS("Preset loaded with warnings"),
+                        TRANS("The following effects were not recognized and could not be loaded: ") + list + ".\n\n"
+                        + TRANS("You can keep the effects that were loaded, or clear the chain entirely."),
+                        TRANS("Keep loaded"),
+                        TRANS("Clear chain"),
+                        nullptr,
+                        juce::ModalCallbackFunction::create([this](int choice) {
+                            if (choice == 0) {
+                                m_controller.clearChain();
+                                if (onChainChanged) onChainChanged();
+                            }
+                        }));
+                }
             } else {
-                juce::AlertWindow::showMessageBoxAsync(
-                    juce::MessageBoxIconType::WarningIcon,
-                    TRANS("Error"),
-                    TRANS("Failed to load preset."));
+                if (onErrorMessage) onErrorMessage(TRANS("Failed to load preset: the file is missing or corrupted."));
             }
         });
 }

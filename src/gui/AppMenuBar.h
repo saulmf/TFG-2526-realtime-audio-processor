@@ -26,6 +26,7 @@ public:
 
     std::function<void()> onChainChanged;
     std::function<void()> onSettingsChanged;
+    std::function<void(const juce::String &)> onErrorMessage;
 
     static constexpr int k_height = 24;
 

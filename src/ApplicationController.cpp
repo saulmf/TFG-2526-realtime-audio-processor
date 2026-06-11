@@ -145,9 +145,10 @@ bool ApplicationController::savePreset(const juce::File &file) {
     return m_presetManager.savePreset(m_audioEngine.getEffectChain(), file);
 }
 
-bool ApplicationController::loadPreset(const juce::File &file) {
+bool ApplicationController::loadPreset(const juce::File &file, juce::StringArray &outSkippedTypeIds) {
     return m_presetManager.loadPreset(
         m_audioEngine.getEffectChain(),
         m_audioEngine.getEffectFactory(),
-        file);
+        file,
+        outSkippedTypeIds);
 }
