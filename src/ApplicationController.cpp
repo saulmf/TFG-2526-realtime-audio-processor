@@ -92,7 +92,7 @@ const juce::Array<double> &ApplicationController::getValidSampleRates() {
 
 // Effect chain management
 
-void ApplicationController::addEffect(const juce::String &typeId, int position) {
+void ApplicationController::addEffect(const juce::String &typeId) {
     if (m_audioEngine.getEffectChain().getNumEffects() >= k_maxEffects) {
         DBG("ApplicationController::addEffect - chain full (max " + juce::String(k_maxEffects) + " effects).");
         return;
@@ -105,7 +105,7 @@ void ApplicationController::addEffect(const juce::String &typeId, int position) 
         return;
     }
 
-    m_audioEngine.getEffectChain().addEffect(std::move(effect), position);
+    m_audioEngine.getEffectChain().addEffect(std::move(effect));
 }
 
 void ApplicationController::removeEffect(int index) {

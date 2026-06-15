@@ -13,10 +13,13 @@
  */
 class StatusBar : public juce::Component {
 public:
+    /** Creates the status bar and performs an initial refresh to show current settings. */
     explicit StatusBar(ApplicationController &controller);
 
+    /** Reads the current sample rate and buffer size from the controller and schedules a repaint. */
     void refresh();
 
+    /** Draws the background and the right-aligned configuration text. */
     void paint(juce::Graphics &g) override;
 
     static constexpr int k_height = 20;

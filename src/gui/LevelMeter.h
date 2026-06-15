@@ -21,13 +21,24 @@ class LevelMeter : public juce::Component,
 public:
     LevelMeter();
 
+    /**
+     * Sets the callable that is polled on each timer tick to obtain the current signal level.
+     * @param source A function returning a linear peak value in the range [0, 1+].
+     */
     void setLevelSource(std::function<float()> source);
 
+    /**
+     * Starts or stops the 30 Hz timer.
+     * When deactivating, resets all visual state (bar, peak hold, clip indicator) and repaints.
+     * @param shouldBeActive Pass true to start the meter, false to stop and clear it.
+     */
     void setActive(bool shouldBeActive);
 
+    /** Renders the coloured level bar, peak-hold marker, dB tick marks, and clip LED. */
     void paint(juce::Graphics &g) override;
 
 private:
+    /** Reads the level source, updates bar level / peak hold / clip state, and triggers a repaint. */
     void timerCallback() override;
 
     std::function<float()> m_levelSource;

@@ -38,5 +38,10 @@ desktop.ini
     # *.xml
     # *.json
 
-# Documentation files
-docs/
+# Include doxygen generated documentation files. Ignore LaTex files and generated diagrams.
+docs/latex/
+docs/diagrams/
+docs/xml/
+docs/rtf/
+docs/man/
+docs/*.pdf

@@ -25,31 +25,51 @@
  */
 class ParametricEQEffect : public AudioEffectBase {
 public:
-    static constexpr const char *TYPE_ID = "parametriceq";
+    static constexpr const char *TYPE_ID = "parametriceq"; ///< Stable type identifier used by EffectFactory and PresetManager.
 
     // Exposed so the anonymous-namespace helpers in the .cpp can reference them
-    static constexpr float k_minFreqHz{20.0f};
-    static constexpr float k_maxFreqHz{20000.0f};
-    static constexpr float k_minQ{0.1f};
-    static constexpr float k_maxQ{10.0f};
+    static constexpr float k_minFreqHz{20.0f};   ///< Minimum band centre frequency (Hz).
+    static constexpr float k_maxFreqHz{20000.0f}; ///< Maximum band centre frequency (Hz).
+    static constexpr float k_minQ{0.1f};          ///< Minimum Q (widest bandwidth).
+    static constexpr float k_maxQ{10.0f};          ///< Maximum Q (narrowest bandwidth).
 
+    /** Creates the effect, initialises the APVTS with nine parameters, and caches raw parameter pointers. */
     ParametricEQEffect();
 
+    /** @copydoc IAudioEffect::getTypeId() */
     juce::String getTypeId() const override { return TYPE_ID; }
+
+    /** @copydoc IAudioEffect::getName() */
     juce::String getName() const override { return "Parametric EQ"; }
 
+    /** @copydoc IAudioEffect::getState() */
     juce::ValueTree getState() const override;
 
+    /** @copydoc IAudioEffect::setState()
+        @param state ValueTree as returned by getState(). */
     void setState(const juce::ValueTree &state) override;
 
 protected:
+    /**
+     * Recalculates IIR peak-filter coefficients for each of the three bands, then processes the buffer.
+     * @param buffer Buffer to process in place.
+     * @note Coefficient calculation involves a small, fixed-size allocation (standard JUCE EQ pattern).
+     * @warning Audio thread only.
+     */
     void processBlock(juce::AudioBuffer<float> &buffer) override;
 
+    /**
+     * Initialises all three IIR band filters with flat (0 dB) default coefficients
+     * and prepares the DSP chain.
+     * @param spec Sample rate and block size confirmed by the audio device.
+     */
     void prepareToProcess(const juce::dsp::ProcessSpec &spec) override;
 
+    /** Resets the filter history for all three bands. */
     void resetState() override;
 
 private:
+    /** Builds the APVTS parameter layout: Freq, Gain, and Q for each of the three bands (nine parameters total). */
     static juce::AudioProcessorValueTreeState::ParameterLayout
     createParameterLayout();
 

@@ -37,7 +37,8 @@ public:
 
     // IAudioEffect - lifecycle (Template Method, final)
 
-    /** Stores spec and delegates to prepareToProcess(). GUI thread only. */
+    /** Stores spec and delegates to prepareToProcess(). GUI thread only.
+        @param spec Sample rate, block size, and channel count for the upcoming session. */
     void prepare(const juce::dsp::ProcessSpec &spec) final;
 
     /** Delegates to resetState(). Clears DSP state, preserves parameters. */
@@ -47,6 +48,7 @@ public:
      * Checks the enabled flag; if disabled, returns immediately (Null Object bypass).
      * Otherwise, delegates to processBlock().
      *
+     * @param buffer Buffer to process in place.
      * @warning Audio thread only.
      */
     void process(juce::AudioBuffer<float> &buffer) final;
@@ -54,17 +56,21 @@ public:
 
     // IAudioEffect - enable / disable (final)
 
+    /** @copydoc IAudioEffect::isEnabled() */
     bool isEnabled() const final;
 
+    /** @copydoc IAudioEffect::setEnabled() */
     void setEnabled(bool enabled) final;
 
 
     // IAudioEffect - parameter access (final)
 
+    /** @copydoc IAudioEffect::getAPVTS() */
     juce::AudioProcessorValueTreeState &getAPVTS() final;
 
 protected:
-    AudioEffectBase(); // defined in .cpp - user-provided to avoid implicit deletion
+    /** Default constructor. Defined in the .cpp to prevent implicit deletion by the compiler. */
+    AudioEffectBase();
 
 
     // Template method hooks - subclasses must implement these
@@ -72,12 +78,13 @@ protected:
     /**
      * DSP processing for one buffer.
      *
+     * @param buffer Buffer to process in place; channel count and size are guaranteed to match the spec.
      * @warning Audio thread only. No allocation, no locking.
      */
     virtual void processBlock(juce::AudioBuffer<float> &buffer) = 0;
 
-    /** Allocate and initialize all DSP objects for the given spec.
-     *
+    /** Allocates and initialises all DSP objects for the given spec.
+     * @param spec Sample rate, block size, and channel count confirmed by the audio device.
      * @note GUI thread.
      */
     virtual void prepareToProcess(const juce::dsp::ProcessSpec &spec) = 0;
@@ -94,66 +101,46 @@ protected:
     /**
      * Constructs the APVTS with the given parameter layout.
      *
+     * @param layout Parameter layout built by the concrete class's createParameterLayout().
      * @note Must be called exactly once, as the first statement of every concrete effect's constructor,
      * before caching any raw parameter pointers.
      */
     void initialiseAPVTS(juce::AudioProcessorValueTreeState::ParameterLayout layout);
 
 private:
-    // DummyProcessor - minimal AudioProcessor used solely to own the APVTS.
-    // It has no audio buses and performs no processing.
-    // It exists only because juce::AudioProcessorValueTreeState requires an AudioProcessor& owner.
-
+    /**
+     * Minimal AudioProcessor used solely as an owner for the APVTS.
+     * It has no audio buses and performs no processing.
+     * It exists only because juce::AudioProcessorValueTreeState requires an AudioProcessor& owner.
+     */
     class DummyProcessor final : public juce::AudioProcessor {
     public:
-        DummyProcessor() : AudioProcessor(BusesProperties()) {
-        }
+        DummyProcessor() : AudioProcessor(BusesProperties()) {}
 
-        // Identity
-        const juce::String getName() const override { return {}; }
+        const juce::String getName() const override { return {}; } ///< Returns an empty name; this processor is never presented to the user.
 
-        // Audio processing - never called
-        void prepareToPlay(double, int) override {
-        }
+        void prepareToPlay(double, int) override {}   ///< No-op: this processor is never used for audio.
+        void releaseResources() override {}           ///< No-op: no resources to release.
+        void processBlock(juce::AudioBuffer<float> &, juce::MidiBuffer &) override {} ///< No-op: audio processing is handled by the concrete effect.
 
-        void releaseResources() override {
-        }
+        bool isBusesLayoutSupported(const BusesLayout &) const override { return true; } ///< Accepts any layout since it never processes audio.
 
-        void processBlock(juce::AudioBuffer<float> &, juce::MidiBuffer &) override {
-        }
+        bool acceptsMidi() const override { return false; } ///< MIDI not used.
+        bool producesMidi() const override { return false; } ///< MIDI not used.
 
-        // Bus layout - accepts anything since it is never used for audio
-        bool isBusesLayoutSupported(const BusesLayout &) const override { return true; }
+        double getTailLengthSeconds() const override { return 0.0; } ///< No tail.
 
-        // MIDI - not used
-        bool acceptsMidi() const override { return false; }
-        bool producesMidi() const override { return false; }
+        bool hasEditor() const override { return false; }             ///< No plugin editor in standalone mode.
+        juce::AudioProcessorEditor *createEditor() override { return nullptr; } ///< Returns nullptr; standalone app, no plugin editor needed.
 
-        // Tail
-        double getTailLengthSeconds() const override { return 0.0; }
+        int getNumPrograms() override { return 1; }      ///< Single dummy program required by the interface.
+        int getCurrentProgram() override { return 0; }   ///< Always returns 0 (only one dummy program exists).
+        void setCurrentProgram(int) override {}          ///< No-op.
+        const juce::String getProgramName(int) override { return {}; } ///< Returns empty string.
+        void changeProgramName(int, const juce::String &) override {}  ///< No-op.
 
-        // Editor - standalone app, no plugin editor needed
-        bool hasEditor() const override { return false; }
-        juce::AudioProcessorEditor *createEditor() override { return nullptr; }
-
-        // Programs - single dummy program required by the interface
-        int getNumPrograms() override { return 1; }
-        int getCurrentProgram() override { return 0; }
-
-        void setCurrentProgram(int) override {
-        }
-
-        const juce::String getProgramName(int) override { return {}; }
-
-        void changeProgramName(int, const juce::String &) override {
-        }
-
-        // State - managed by the APVTS, not stored here
-        void getStateInformation(juce::MemoryBlock &) override {
-        }
-
-        void setStateInformation(const void *, int) override {
-        }
+        void getStateInformation(juce::MemoryBlock &) override {}    ///< State is managed by the APVTS, not stored here.
+        void setStateInformation(const void *, int) override {}      ///< State is managed by the APVTS, not stored here.
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyProcessor)
     };

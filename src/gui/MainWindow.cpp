@@ -93,9 +93,9 @@ public:
             m_chainPanel.refreshChain();
         };
 
-        // Clicking an empty slot expands the browser and targets that slot position
-        m_chainPanel.onEmptySlotClicked = [this](int slotIndex) {
-            m_browserPanel.expandForSlot(slotIndex);
+        // Clicking an empty slot expands the browser
+        m_chainPanel.onEmptySlotClicked = [this](int) {
+            m_browserPanel.expandForSlot();
         };
 
         // Animate the browser height between collapsed and expanded.

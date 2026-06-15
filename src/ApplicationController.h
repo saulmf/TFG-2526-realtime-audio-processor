@@ -29,7 +29,7 @@ public:
 
     /**
      * Starts the real-time audio session.
-     * Returns an empty string on success, or a human-readable error message.
+     * @return Empty string on success, or a descriptive error message on failure.
      */
     juce::String start();
 
@@ -41,65 +41,113 @@ public:
 
     // Device configuration - call before start()
 
+    /** Returns all audio input device names available on the host system.
+        @return Empty array if no input devices are detected. */
     [[nodiscard]] juce::StringArray getAvailableInputDevices() const;
 
+    /** Returns all audio output device names available on the host system.
+        @return Empty array if no output devices are detected. */
     [[nodiscard]] juce::StringArray getAvailableOutputDevices() const;
 
+    /** Returns the currently selected input device name.
+        @return Empty string if no input device has been selected. */
     [[nodiscard]] juce::String getCurrentInputDeviceName() const;
 
+    /** Returns the currently selected output device name.
+        @return Empty string if no output device has been selected. */
     [[nodiscard]] juce::String getCurrentOutputDeviceName() const;
 
+    /** Selects the audio input device by name.
+        @param deviceName Name as returned by getAvailableInputDevices().
+        @return true on success, false if the device was not found or could not be opened. */
     bool setInputDevice(const juce::String &deviceName);
 
+    /** Selects the audio output device by name.
+        @param deviceName Name as returned by getAvailableOutputDevices().
+        @return true on success, false if the device was not found or could not be opened. */
     bool setOutputDevice(const juce::String &deviceName);
 
+    /** Sets the desired sample rate. Must be one of the values in getValidSampleRates().
+        @param sampleRate Target sample rate in Hz.
+        @return true if the value was accepted; false if it is not a supported rate. */
     bool setSampleRate(double sampleRate);
 
+    /** Sets the desired buffer size in samples. Must be one of the values in getValidBufferSizes().
+        @param bufferSizeInSamples Target block size.
+        @return true if the value was accepted; false if it is not a supported size. */
     bool setBufferSize(int bufferSizeInSamples);
 
+    /** Returns the sample rate currently in use (or the pending value if the session has not started). */
     [[nodiscard]] double getCurrentSampleRate() const;
 
+    /** Returns the buffer size in samples currently in use (or the pending value if the session has not started). */
     [[nodiscard]] int getCurrentBufferSize() const;
 
-    // Raw input/output peak levels [0, 1+] (can exceed 1.0 when effects boost the signal or the input is already clipping)
+    /**
+     * Returns the most recent raw input peak in the range [0, 1+].
+     * Can exceed 1.0 when the input device is already clipping.
+     */
     [[nodiscard]] float getInputLevel() const;
 
+    /**
+     * Returns the most recent raw output peak in the range [0, 1+].
+     * Can exceed 1.0 when effects boost the signal.
+     */
     [[nodiscard]] float getOutputLevel() const;
 
-    // Master output volume [0, 1]. Default 1.0 (full volume).
+    /** Sets the master output gain.
+        @param v Volume in the range [0, 1]; values outside this range are clamped. */
     void setMasterVolume(float v);
 
+    /** Returns the current master volume in the range [0, 1]. */
     [[nodiscard]] float getMasterVolume() const;
 
+    /** Returns the list of supported buffer sizes, in samples. */
     [[nodiscard]] static const juce::Array<int> &getValidBufferSizes();
 
+    /** Returns the list of supported sample rates, in Hz. */
     [[nodiscard]] static const juce::Array<double> &getValidSampleRates();
 
 
     // Effect chain management
 
     /**
-     * Creates the effect with the given type ID and appends it to the chain.
-     * If position is a valid index, inserts at that position instead.
+     * Creates the effect with the given type ID and appends it to the end of the chain.
      * Does nothing if the type ID is not registered.
+     * @param typeId Registered type ID of the effect to create (e.g. "overdrive").
      */
-    void addEffect(const juce::String &typeId, int position = -1);
+    void addEffect(const juce::String &typeId);
 
+    /** Removes the effect at the given index from the chain.
+        @param index Zero-based position of the effect to remove. */
     void removeEffect(int index);
 
+    /** Removes all effects from the chain. */
     void clearChain();
 
+    /** Moves the effect at fromIndex to toIndex, shifting intermediate effects accordingly.
+        @param fromIndex Current position of the effect to move.
+        @param toIndex Target position. */
     void moveEffect(int fromIndex, int toIndex);
 
+    /** Enables or disables the effect at the given index without removing it from the chain.
+        @param index Zero-based position of the effect.
+        @param enabled Pass true to enable processing, false to bypass. */
     void setEffectEnabled(int index, bool enabled);
 
+    /** Returns the number of effects currently in the chain. */
     [[nodiscard]] int getNumEffects() const;
 
+    /**
+     * Returns a raw non-owning pointer to the effect at the given index.
+     * @param index Zero-based position in the chain.
+     * @return Pointer to the effect, or nullptr if the index is out of range.
+     */
     [[nodiscard]] IAudioEffect *getEffect(int index);
 
     /**
      * Returns the type IDs of all registered effects, sorted alphabetically.
-     * (Used to populate the add-effect list in the GUI).
+     * @return StringArray of type IDs; used to populate the add-effect list in the GUI.
      */
     [[nodiscard]] juce::StringArray getAvailableEffectTypes() const;
 
@@ -109,13 +157,16 @@ public:
 
     // Preset management
 
-    /** Saves the current chain state to an XML file. Returns true on success. */
+    /** Saves the current chain state to an XML file.
+        @param file Destination file; created or overwritten if it already exists.
+        @return true on success, false if the file could not be written. */
     bool savePreset(const juce::File &file);
 
     /**
-     * Loads and restores a chain state from an XML file. Returns true on success.
-     * outSkippedTypeIds is populated with any effect type IDs that were present in the
-     * file but not recognised by the factory (and therefore skipped).
+     * Loads and restores a chain state from an XML file.
+     * @param file Source XML preset file.
+     * @param outSkippedTypeIds Populated with any type IDs present in the file but not recognised by the factory.
+     * @return true on success, false if the file is missing or malformed.
      */
     bool loadPreset(const juce::File &file, juce::StringArray &outSkippedTypeIds);
 

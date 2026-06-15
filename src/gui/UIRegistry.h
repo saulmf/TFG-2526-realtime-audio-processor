@@ -17,12 +17,23 @@
  */
 class UIRegistry {
 public:
+    /**
+     * Registers the visual descriptor for a given effect type ID.
+     * @param typeId Must match the TYPE_ID of the corresponding effect class.
+     * @param descriptor Visual metadata to associate with this type.
+     * @note Asserts in debug builds if typeId is empty or already registered.
+     */
     void registerDescriptor(const juce::String &typeId, EffectUIDescriptor descriptor);
 
-    // Returns nullptr if typeId has no registered descriptor
+    /**
+     * Returns a pointer to the descriptor for the given type ID.
+     * @param typeId Type ID to look up.
+     * @return Pointer to the descriptor, or nullptr if the type ID has not been registered.
+     */
     [[nodiscard]] const EffectUIDescriptor *getDescriptor(const juce::String &typeId) const;
 
-    // Returns all registered type IDs, used for building the effect browser
+    /** Returns the type IDs of all registered descriptors, used to build the effect browser catalogue.
+        @return StringArray of registered type IDs, in insertion order. */
     [[nodiscard]] juce::StringArray getRegisteredTypeIds() const;
 
 private:

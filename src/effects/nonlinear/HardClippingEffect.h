@@ -22,25 +22,44 @@
  */
 class HardClippingEffect : public AudioEffectBase {
 public:
-    static constexpr const char *TYPE_ID = "hardclip";
+    static constexpr const char *TYPE_ID = "hardclip"; ///< Stable type identifier used by EffectFactory and PresetManager.
 
+    /** Creates the effect, initialises the APVTS, and caches raw parameter pointers. */
     HardClippingEffect();
 
+    /** @copydoc IAudioEffect::getTypeId() */
     juce::String getTypeId() const override { return TYPE_ID; }
+
+    /** @copydoc IAudioEffect::getName() */
     juce::String getName() const override { return "Hard Clipping"; }
 
+    /** @copydoc IAudioEffect::getState() */
     juce::ValueTree getState() const override;
 
+    /** @copydoc IAudioEffect::setState()
+        @param state ValueTree as returned by getState(). */
     void setState(const juce::ValueTree &state) override;
 
 protected:
+    /**
+     * Applies hard-clipping (jlimit ±1.0) with pre-gain, low-pass tone filter, and output level.
+     * @param buffer Buffer to process in place.
+     * @warning Audio thread only. No allocation, no locking.
+     */
     void processBlock(juce::AudioBuffer<float> &buffer) override;
 
+    /**
+     * Sets the hard-clip waveshaper function and configures the tone filter as low-pass,
+     * then prepares the full DSP chain.
+     * @param spec Sample rate and block size confirmed by the audio device.
+     */
     void prepareToProcess(const juce::dsp::ProcessSpec &spec) override;
 
+    /** Resets all DSP chain state. */
     void resetState() override;
 
 private:
+    /** Builds the APVTS parameter layout: Gain, Level, and Tone. */
     static juce::AudioProcessorValueTreeState::ParameterLayout
     createParameterLayout();
 

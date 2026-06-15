@@ -22,26 +22,45 @@
  */
 class LowPassFilterEffect : public AudioEffectBase {
 public:
-    static constexpr const char *TYPE_ID = "lowpass";
-    static constexpr int k_maxStages = 4;
+    static constexpr const char *TYPE_ID = "lowpass"; ///< Stable type identifier used by EffectFactory and PresetManager.
+    static constexpr int k_maxStages = 4;             ///< Maximum number of cascadeable filter stages (each adds 12 dB/oct).
 
+    /** Creates the effect, initialises the APVTS, and caches raw parameter pointers. */
     LowPassFilterEffect();
 
+    /** @copydoc IAudioEffect::getTypeId() */
     juce::String getTypeId() const override { return TYPE_ID; }
+
+    /** @copydoc IAudioEffect::getName() */
     juce::String getName() const override { return "Low-Pass Filter"; }
 
+    /** @copydoc IAudioEffect::getState() */
     juce::ValueTree getState() const override;
 
+    /** @copydoc IAudioEffect::setState()
+        @param state ValueTree as returned by getState(). */
     void setState(const juce::ValueTree &state) override;
 
 protected:
+    /**
+     * Applies the first 'order' cascaded low-pass stages at the current cutoff frequency.
+     * @param buffer Buffer to process in place.
+     * @warning Audio thread only. No allocation (setCutoffFrequency is allocation-free).
+     */
     void processBlock(juce::AudioBuffer<float> &buffer) override;
 
+    /**
+     * Configures all k_maxStages filters as low-pass and prepares each one.
+     * All stages are always prepared; only the first 'order' are active in processBlock.
+     * @param spec Sample rate and block size confirmed by the audio device.
+     */
     void prepareToProcess(const juce::dsp::ProcessSpec &spec) override;
 
+    /** Resets the state of all k_maxStages filter stages. */
     void resetState() override;
 
 private:
+    /** Builds the APVTS parameter layout: Cutoff (Hz) and Order (1–4). */
     static juce::AudioProcessorValueTreeState::ParameterLayout
     createParameterLayout();
 

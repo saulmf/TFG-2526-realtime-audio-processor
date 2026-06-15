@@ -51,8 +51,6 @@ public:
     void mouseMove(const juce::MouseEvent &e) override { updateHover(e.getPosition()); }
     void mouseExit(const juce::MouseEvent &) override { clearHover(); }
 
-    void setTargetSlot(int slot) noexcept { m_targetSlot = slot; }
-
     void mouseDown(const juce::MouseEvent &e) override {
         if (m_controller.isRunning())
             return;
@@ -68,8 +66,7 @@ public:
                         return;
                     }
 
-                    m_controller.addEffect(card.typeId, m_targetSlot);
-                    m_targetSlot = -1; // reset so next open-via-button appends
+                    m_controller.addEffect(card.typeId);
                     DBG("[EffectBrowserPanel] Added " + card.typeId);
                     if (onEffectAdded) onEffectAdded();
                     return;
@@ -185,7 +182,6 @@ private:
     std::vector<CategoryGroup> m_groups;
     int m_hoveredGroup{-1};
     int m_hoveredCard{-1};
-    int m_targetSlot{-1}; // insertion position (-1 = append)
 
 public:
     std::function<void()> onEffectAdded;
@@ -228,9 +224,6 @@ void EffectBrowserPanel::toggleExpanded() {
 
     m_isExpanded = !m_isExpanded;
 
-    // Opening via the button always appends (no specific target slot)
-    m_catalogue->setTargetSlot(-1);
-
     m_toggleButton.setButtonText(m_isExpanded ? TRANS("v Browse Effects") : TRANS("^ Browse Effects"));
     m_viewport.setVisible(m_isExpanded);
 
@@ -238,14 +231,12 @@ void EffectBrowserPanel::toggleExpanded() {
         onExpandedStateChanged(m_isExpanded);
 }
 
-void EffectBrowserPanel::expandForSlot(int slotIndex) {
+void EffectBrowserPanel::expandForSlot() {
     if (m_controller.isRunning())
         return;
 
     if (!m_isExpanded)
         toggleExpanded();
-
-    m_catalogue->setTargetSlot(slotIndex);
 }
 
 void EffectBrowserPanel::paint(juce::Graphics &g) {

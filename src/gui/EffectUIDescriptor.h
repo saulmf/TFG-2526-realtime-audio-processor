@@ -14,15 +14,15 @@
  * so the two registries stay in sync without coupling.
  */
 struct EffectUIDescriptor {
-    juce::String displayName;
-    juce::String category;
-    juce::String labelText; // short label on the pedal body (e.g. "OD", "FUZZ")
+    juce::String displayName;  ///< Full name shown in the pedal card header and browser (e.g. "Overdrive").
+    juce::String category;     ///< Group name used to organise effects in the browser (e.g. "Nonlinear").
+    juce::String labelText;    ///< Short label painted on the pedal body (e.g. "OD", "FUZZ").
 
-    juce::Colour bodyColour;
-    juce::Colour accentColour; // knob caps, LED active color, label text
+    juce::Colour bodyColour;   ///< Background fill colour of the pedal card.
+    juce::Colour accentColour; ///< Colour used for knob caps, the active LED, and label text.
 
-    juce::String tooltip;
+    juce::String tooltip;      ///< Tooltip shown when hovering over the whole pedal card.
 
-    // Per-parameter tooltip strings, keyed by APVTS paramID
+    /** Per-parameter tooltip strings, keyed by APVTS parameter ID. */
     std::map<juce::String, juce::String> paramTooltips;
 };

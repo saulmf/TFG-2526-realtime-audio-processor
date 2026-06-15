@@ -18,25 +18,44 @@
  */
 class OverdriveEffect : public AudioEffectBase {
 public:
-    static constexpr const char *TYPE_ID = "overdrive";
+    static constexpr const char *TYPE_ID = "overdrive"; ///< Stable type identifier used by EffectFactory and PresetManager.
 
+    /** Creates the effect, initialises the APVTS, and caches raw parameter pointers. */
     OverdriveEffect();
 
+    /** @copydoc IAudioEffect::getTypeId() */
     juce::String getTypeId() const override { return TYPE_ID; }
+
+    /** @copydoc IAudioEffect::getName() */
     juce::String getName() const override { return "Overdrive"; }
 
+    /** @copydoc IAudioEffect::getState() */
     juce::ValueTree getState() const override;
 
+    /** @copydoc IAudioEffect::setState()
+        @param state ValueTree as returned by getState(). */
     void setState(const juce::ValueTree &state) override;
 
 protected:
+    /**
+     * Applies soft-clipping (tanh) with pre-gain, low-pass tone filter, and output level.
+     * @param buffer Buffer to process in place.
+     * @warning Audio thread only. No allocation, no locking.
+     */
     void processBlock(juce::AudioBuffer<float> &buffer) override;
 
+    /**
+     * Sets the tanh waveshaper function and configures the tone filter as low-pass,
+     * then prepares the full DSP chain.
+     * @param spec Sample rate and block size confirmed by the audio device.
+     */
     void prepareToProcess(const juce::dsp::ProcessSpec &spec) override;
 
+    /** Resets all DSP chain state (filter history, waveshaper state). */
     void resetState() override;
 
 private:
+    /** Builds the APVTS parameter layout: Drive, Level, and Tone. */
     static juce::AudioProcessorValueTreeState::ParameterLayout
     createParameterLayout();
 

@@ -17,11 +17,28 @@
 #include "effects/timebased/DigitalDelayEffect.h"
 #include "effects/timebased/AlgorithmicReverbEffect.h"
 
+/**
+ * MainApplication is the JUCE application entry point.
+ *
+ * Owns all top-level objects (AudioEngine, ApplicationController, UIRegistry, MainWindow)
+ * and is responsible for creating them in the right order during startup and destroying them on quit.
+ *
+ * Startup sequence:
+ *   1. Load Spanish translations if the system language is Spanish.
+ *   2. Create AudioEngine and register all effect types with EffectFactory.
+ *   3. Create ApplicationController (facade between GUI and audio).
+ *   4. Populate UIRegistry with visual descriptors for each effect type.
+ *   5. Create MainWindow (kicks off the GUI).
+ */
 class MainApplication : public juce::JUCEApplication {
 public:
+    /** Returns the application name displayed in the title bar. */
     const juce::String getApplicationName() override { return "Realtime Audio Processor"; }
+
+    /** Returns the current application version string. */
     const juce::String getApplicationVersion() override { return "1.0.0"; }
 
+    /** Called by JUCE on startup. Performs the full initialisation sequence described above. */
     void initialise(const juce::String &) override {
         // 0. Load Spanish translations when the system language is Spanish
         //    English strings are used as keys and serve as the natural fallback, so no English translation file is needed
@@ -177,6 +194,7 @@ public:
         DBG("[init] MainWindow created. Application ready.");
     }
 
+    /** Called by JUCE on quit. Destroys all subsystems in reverse creation order. */
     void shutdown() override {
         m_mainWindow = nullptr;
         m_uiRegistry = nullptr;

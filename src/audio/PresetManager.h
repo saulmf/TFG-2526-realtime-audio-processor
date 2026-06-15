@@ -20,16 +20,20 @@ public:
 
     /**
      * Saves the current chain state (effect order, enabled flags, and all parameter values) to an XML file.
-     * Returns true on success, false if the file could not be written.
+     * @param chain Chain whose state is to be serialised.
+     * @param file Destination file; created or overwritten if it already exists.
+     * @return true on success, false if the file could not be written.
      */
     bool savePreset(const EffectChain &chain, const juce::File &file) const;
 
     /**
      * Loads a preset from an XML file and fully reconstructs the chain.
      * The existing chain contents are replaced.
-     * Returns true on success, false if the file is missing or malformed.
-     * On success, outSkippedTypeIds is populated with any type IDs that were
-     * not recognised by the factory and therefore skipped.
+     * @param chain Chain to reconstruct; its current contents are cleared before loading.
+     * @param factory Used to instantiate each effect by the type ID stored in the file.
+     * @param file Source XML preset file.
+     * @param outSkippedTypeIds Populated with any type IDs present in the file but not recognised by the factory.
+     * @return true on success, false if the file is missing or malformed.
      */
     bool loadPreset(EffectChain &chain,
                     const EffectFactory &factory,

@@ -21,12 +21,16 @@
  */
 class TransportBar : public juce::Component {
 public:
+    /** Creates the bar, sets up all controls, connects their callbacks, and populates the device lists. */
     explicit TransportBar(ApplicationController &controller);
 
+    /** Lays out the device combo boxes, volume slider, start/stop button, level meters, and LED. */
     void resized() override;
 
+    /** Draws the background, bottom separator line, and session LED indicator. */
     void paint(juce::Graphics &g) override;
 
+    /** Updates the status label and repaints the LED to reflect the current session state. */
     void refreshStatus();
 
     // Wired by the parent (MainWindow content component) to notify siblings when the session starts or stops.
@@ -38,6 +42,7 @@ public:
     static constexpr int k_height = 84;
 
 private:
+    /** Queries the controller for available I/O devices and populates both combo boxes. */
     void populateDeviceLists();
 
     ApplicationController &m_controller;

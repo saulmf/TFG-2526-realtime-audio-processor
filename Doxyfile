@@ -1,0 +1,27 @@
+# Doxyfile for Realtime Audio Processor
+
+PROJECT_NAME           = "Realtime Audio Processor"
+PROJECT_NUMBER         = 1.0.0
+PROJECT_BRIEF          = "Real-time guitar effects processor built with JUCE 8 and C++17."
+OUTPUT_DIRECTORY       = docs
+
+INPUT                  = src
+RECURSIVE              = YES
+FILE_PATTERNS          = *.h *.cpp
+
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+JAVADOC_AUTOBRIEF      = YES
+BUILTIN_STL_SUPPORT    = YES
+
+WARN_IF_UNDOCUMENTED   = NO
+
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+HTML_COLORSTYLE        = LIGHT
+GENERATE_TREEVIEW      = YES
+
+GENERATE_LATEX         = NO
+
+HAVE_DOT               = NO

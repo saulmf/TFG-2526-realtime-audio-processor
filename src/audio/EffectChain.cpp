@@ -30,7 +30,7 @@ void EffectChain::process(juce::AudioBuffer<float> &buffer) {
 
 // Chain modification
 
-void EffectChain::addEffect(std::unique_ptr<IAudioEffect> effect, int position) {
+void EffectChain::addEffect(std::unique_ptr<IAudioEffect> effect) {
     jassert(effect != nullptr);
 
     // If the engine is already running and prepared,
@@ -39,12 +39,7 @@ void EffectChain::addEffect(std::unique_ptr<IAudioEffect> effect, int position) 
         effect->prepare(m_currentSpec);
     }
 
-    if (position >= 0 && position < static_cast<int>(m_effects.size())) {
-        m_effects.insert(m_effects.begin() + position, std::move(effect));
-    } else {
-        // If no particular position is defined, append the effect to the end of the chain
-        m_effects.push_back(std::move(effect));
-    }
+    m_effects.push_back(std::move(effect));
 }
 
 void EffectChain::removeEffect(int index) {

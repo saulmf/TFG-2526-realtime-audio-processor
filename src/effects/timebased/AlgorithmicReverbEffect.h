@@ -24,25 +24,42 @@
  */
 class AlgorithmicReverbEffect : public AudioEffectBase {
 public:
-    static constexpr const char *TYPE_ID = "reverb";
+    static constexpr const char *TYPE_ID = "reverb"; ///< Stable type identifier used by EffectFactory and PresetManager.
 
+    /** Creates the effect, initialises the APVTS, and caches raw parameter pointers. */
     AlgorithmicReverbEffect();
 
+    /** @copydoc IAudioEffect::getTypeId() */
     juce::String getTypeId() const override { return TYPE_ID; }
+
+    /** @copydoc IAudioEffect::getName() */
     juce::String getName() const override { return "Reverb"; }
 
+    /** @copydoc IAudioEffect::getState() */
     juce::ValueTree getState() const override;
 
+    /** @copydoc IAudioEffect::setState()
+        @param state ValueTree as returned by getState(). */
     void setState(const juce::ValueTree &state) override;
 
 protected:
+    /**
+     * Updates reverb parameters and processes the buffer through juce::dsp::Reverb.
+     * Wet/dry blending is handled internally by the reverb via wetLevel and dryLevel.
+     * @param buffer Buffer to process in place.
+     * @warning Audio thread only. setParameters() writes to pre-allocated delay lines (no allocation).
+     */
     void processBlock(juce::AudioBuffer<float> &buffer) override;
 
+    /** Prepares the juce::dsp::Reverb object for the given sample rate and block size.
+        @param spec Sample rate and block size confirmed by the audio device. */
     void prepareToProcess(const juce::dsp::ProcessSpec &spec) override;
 
+    /** Resets the reverb algorithm state, clearing all comb and all-pass filter histories. */
     void resetState() override;
 
 private:
+    /** Builds the APVTS parameter layout: Room Size, Damping, Width, and Mix. */
     static juce::AudioProcessorValueTreeState::ParameterLayout
     createParameterLayout();
 

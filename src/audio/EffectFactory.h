@@ -33,25 +33,26 @@ public:
 
     /**
      * Registers a creator function for a given type ID.
-     * Must be called once per effect type before any create() call
-     *  (It is called from main.cpp during application initialization)
+     * Must be called once per effect type before any create() call.
+     * (Called from main.cpp during application initialization.)
      *
-     * Asserts in debug builds if typeId is empty or already registered.
+     * @param typeId Stable string identifier for the effect type (e.g. "overdrive").
+     * @param creator Callable that constructs and returns a new instance of the effect.
+     * @note Asserts in debug builds if typeId is empty or already registered.
      */
     void registerEffect(const juce::String &typeId, CreatorFn creator);
 
     /**
      * Instantiates and returns the effect with the given type ID.
-     * Returns nullptr if the type ID has not been registered.
      * The caller takes ownership of the returned object.
-     * @note [[nodiscard]]: ignoring the return value emits a warning.
+     * @param typeId Type ID previously registered via registerEffect().
+     * @return New effect instance, or nullptr if the type ID has not been registered.
      */
     [[nodiscard]] std::unique_ptr<IAudioEffect> create(const juce::String &typeId) const;
 
     /**
      * Returns the type IDs of all registered effects, sorted alphabetically.
-     * Used by the GUI to populate the add-effect dropdown.
-    * @note [[nodiscard]]: ignoring the return value emits a warning.
+     * @return StringArray of type IDs; used by the GUI to populate the add-effect dropdown.
      */
     [[nodiscard]] juce::StringArray getAvailableTypeIds() const;
 

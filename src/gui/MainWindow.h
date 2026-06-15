@@ -17,10 +17,17 @@
  */
 class MainWindow : public juce::DocumentWindow {
 public:
+    /**
+     * Creates the window, builds the MainContentComponent, and makes it visible.
+     * @param name Application name shown in the title bar.
+     * @param controller Facade used by all child components to interact with the audio subsystem.
+     * @param uiRegistry Visual descriptors for each registered effect type.
+     */
     MainWindow(const juce::String &name,
                ApplicationController &controller,
                UIRegistry &uiRegistry);
 
+    /** Forwards the close request to the JUCE application, triggering a clean shutdown. */
     void closeButtonPressed() override;
 
 private:

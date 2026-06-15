@@ -30,6 +30,7 @@ public:
      * Must be called before the first process() invocation and again whenever the sample rate or block size changes.
      *
      * Called from the GUI thread before the session starts.
+     * @param spec Sample rate, block size, and channel count for the upcoming session.
      */
     virtual void prepare(const juce::dsp::ProcessSpec &spec) = 0;
 
@@ -48,6 +49,7 @@ public:
      *
      * If the effect is disabled, the buffer passes through unmodified.
      *
+     * @param buffer Buffer to process in place; channel count and size must match the spec given to prepare().
      * @note No memory allocation, locking, or blocking operations are permitted inside this method or any method it calls.
      */
     virtual void process(juce::AudioBuffer<float> &buffer) = 0;
@@ -60,14 +62,16 @@ public:
      *
      * Used by EffectFactory and PresetManager to serialize and reconstruct effects by type.
      *
+     * @return Stable type ID string (e.g. "overdrive", "reverb").
      * @note Must be stable across versions (changing it breaks saved presets).
      */
     virtual juce::String getTypeId() const = 0;
 
     /**
-     * Returns the human-readable display name for this effect.
+     * Returns the descriptive display name for this effect.
      *
      * Used by the GUI to label effect strips in the chain panel.
+     * @return Display name (e.g. "Overdrive", "Digital Delay").
      */
     virtual juce::String getName() const = 0;
 
@@ -78,6 +82,7 @@ public:
      * Returns true if the effect is currently enabled.
      *
      * A disabled effect passes the signal through unmodified.
+     * @return true if active, false if bypassed.
      */
     virtual bool isEnabled() const = 0;
 
@@ -85,6 +90,7 @@ public:
      * Enables or disables the effect.
      *
      * Must be implemented with an atomic flag so it is safe to call from the GUI thread while the audio thread is running.
+     * @param enabled Pass true to enable processing, false to bypass.
      */
     virtual void setEnabled(bool enabled) = 0;
 
@@ -95,6 +101,7 @@ public:
      * Returns a reference to the AudioProcessorValueTreeState that owns this effect's parameters.
      *
      * Used by the GUI to bind sliders and knobs to parameters in a thread-safe manner via APVTS attachments.
+     * @return Reference to the effect's APVTS.
      */
     virtual juce::AudioProcessorValueTreeState &getAPVTS() = 0;
 
@@ -106,6 +113,7 @@ public:
      *
      * Called by EffectChain::getState().
      *
+     * @return ValueTree containing the effect's type ID, enabled state, and all parameter values.
      * @warning Must be called from the GUI thread only.
      */
     virtual juce::ValueTree getState() const = 0;
@@ -115,30 +123,17 @@ public:
      *
      * Called by EffectChain::setState().
      *
+     * @param state ValueTree as returned by getState().
      * @warning Must be called from the GUI thread only.
      */
     virtual void setState(const juce::ValueTree &state) = 0;
 
 protected:
-    // Required so subclass constructors can call the base constructor.
-    // Protected: only subclasses may use it - IAudioEffect cannot be instantiated directly.
-    IAudioEffect() = default;
+    IAudioEffect() = default; ///< Protected to prevent direct instantiation; only subclasses may construct via this path.
 
 public:
-    // Copy constructor - called on OverdriveEffect b = a;
-    // Deleted: DSP state (buffers, atomics, APVTS) cannot be safely duplicated.
-    IAudioEffect(const IAudioEffect &) = delete;
-
-    // Copy assignment - called on b = a;
-    // Deleted: DSP state (buffers, atomics, APVTS) cannot be safely duplicated.
-    IAudioEffect &operator=(const IAudioEffect &) = delete;
-
-    // Move constructor - called on OverdriveEffect b = std::move(a);
-    // Deleted: effects are owned exclusively by EffectChain via unique_ptr;
-    // (moving them outside of that ownership model would leave the chain in an inconsistent state).
-    IAudioEffect(IAudioEffect &&) = delete;
-
-    // Move assignment - called on b = std::move(a);
-    // Deleted: effects are owned exclusively by EffectChain via unique_ptr;
-    IAudioEffect &operator=(IAudioEffect &&) = delete;
+    IAudioEffect(const IAudioEffect &) = delete;             ///< Deleted: DSP state (buffers, atomics, APVTS) cannot be safely duplicated.
+    IAudioEffect &operator=(const IAudioEffect &) = delete;  ///< Deleted: DSP state (buffers, atomics, APVTS) cannot be safely duplicated.
+    IAudioEffect(IAudioEffect &&) = delete;                  ///< Deleted: effects are owned exclusively by EffectChain via unique_ptr; moving them would leave the chain in an inconsistent state.
+    IAudioEffect &operator=(IAudioEffect &&) = delete;       ///< Deleted: effects are owned exclusively by EffectChain via unique_ptr.
 };

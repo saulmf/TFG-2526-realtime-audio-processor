@@ -20,25 +20,44 @@
  */
 class DigitalDelayEffect : public AudioEffectBase {
 public:
-    static constexpr const char *TYPE_ID = "digitaldelay";
+    static constexpr const char *TYPE_ID = "digitaldelay"; ///< Stable type identifier used by EffectFactory and PresetManager.
 
+    /** Creates the effect, initialises the APVTS, and caches raw parameter pointers. */
     DigitalDelayEffect();
 
+    /** @copydoc IAudioEffect::getTypeId() */
     juce::String getTypeId() const override { return TYPE_ID; }
+
+    /** @copydoc IAudioEffect::getName() */
     juce::String getName() const override { return "Digital Delay"; }
 
+    /** @copydoc IAudioEffect::getState() */
     juce::ValueTree getState() const override;
 
+    /** @copydoc IAudioEffect::setState()
+        @param state ValueTree as returned by getState(). */
     void setState(const juce::ValueTree &state) override;
 
 protected:
+    /**
+     * Runs the per-sample feedback loop and blends dry and wet signals via the DryWetMixer.
+     * @param buffer Buffer to process in place.
+     * @warning Audio thread only. No allocation (DelayLine and DryWetMixer operations are allocation-free once prepared).
+     */
     void processBlock(juce::AudioBuffer<float> &buffer) override;
 
+    /**
+     * Pre-allocates the delay line for the worst-case delay at the current sample rate,
+     * then prepares the dry/wet mixer.
+     * @param spec Sample rate and block size confirmed by the audio device.
+     */
     void prepareToProcess(const juce::dsp::ProcessSpec &spec) override;
 
+    /** Clears the delay line buffer and the dry/wet mixer state. */
     void resetState() override;
 
 private:
+    /** Builds the APVTS parameter layout: Delay Time (ms), Feedback, and Mix. */
     static juce::AudioProcessorValueTreeState::ParameterLayout
     createParameterLayout();
 

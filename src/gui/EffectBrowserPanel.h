@@ -22,21 +22,23 @@
  */
 class EffectBrowserPanel : public juce::Component {
 public:
+    /** Creates the panel, builds the EffectCatalogueComponent, and wires up the toggle button.
+        @param controller Used to call addEffect() when the user clicks an effect thumbnail.
+        @param uiRegistry Visual descriptors used to render each effect thumbnail in the catalogue. */
     EffectBrowserPanel(ApplicationController &controller, UIRegistry &uiRegistry);
 
     ~EffectBrowserPanel() override;
 
+    /** Positions the toggle button at the top and the scrollable catalogue viewport below it. */
     void resized() override;
 
+    /** Draws the panel header bar background. */
     void paint(juce::Graphics &g) override;
 
     [[nodiscard]] bool isExpanded() const noexcept { return m_isExpanded; }
 
-    /**
-     * Expands the browser (if not opened) and uses slotIndex as insertion position for the next effect selected from the catalogue.
-     * Pass -1 to append at the end of the chain (default behavior).
-     */
-    void expandForSlot(int slotIndex);
+    /** Expands the browser if it is currently collapsed. Called when the user clicks an empty slot in the chain panel. */
+    void expandForSlot();
 
     // Called by the parent to animate the bounds change on toggle.
     std::function<void(bool expanded)> onExpandedStateChanged;
@@ -50,6 +52,7 @@ public:
     static constexpr int k_collapsedHeight = 40;
 
 private:
+    /** Flips the expanded state and fires onExpandedStateChanged so the parent can animate the bounds. */
     void toggleExpanded();
 
     ApplicationController &m_controller;

@@ -21,25 +21,44 @@
  */
 class FuzzEffect : public AudioEffectBase {
 public:
-    static constexpr const char *TYPE_ID = "fuzz";
+    static constexpr const char *TYPE_ID = "fuzz"; ///< Stable type identifier used by EffectFactory and PresetManager.
 
+    /** Creates the effect, initialises the APVTS, and caches raw parameter pointers. */
     FuzzEffect();
 
+    /** @copydoc IAudioEffect::getTypeId() */
     juce::String getTypeId() const override { return TYPE_ID; }
+
+    /** @copydoc IAudioEffect::getName() */
     juce::String getName() const override { return "Fuzz"; }
 
+    /** @copydoc IAudioEffect::getState() */
     juce::ValueTree getState() const override;
 
+    /** @copydoc IAudioEffect::setState()
+        @param state ValueTree as returned by getState(). */
     void setState(const juce::ValueTree &state) override;
 
 protected:
+    /**
+     * Applies extreme-gain hard-clipping and output level. Produces a near-square-wave output at high Fuzz settings.
+     * @param buffer Buffer to process in place.
+     * @warning Audio thread only. No allocation, no locking.
+     */
     void processBlock(juce::AudioBuffer<float> &buffer) override;
 
+    /**
+     * Sets the hard-clip waveshaper function and prepares the DSP chain.
+     * The std::function assignment allocates, so it must happen here and never inside processBlock.
+     * @param spec Sample rate and block size confirmed by the audio device.
+     */
     void prepareToProcess(const juce::dsp::ProcessSpec &spec) override;
 
+    /** Resets all DSP chain state. */
     void resetState() override;
 
 private:
+    /** Builds the APVTS parameter layout: Fuzz and Level. */
     static juce::AudioProcessorValueTreeState::ParameterLayout
     createParameterLayout();
 
