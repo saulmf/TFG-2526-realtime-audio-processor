@@ -108,10 +108,58 @@ public:
                 juce::Rectangle<int>(0, getHeight() - statusBarH - targetH, getWidth(), targetH),
                 1.0f, 250, false, 1.0, 0.0);
         };
+
+        // Set keyboard focus so that Alt/Ctrl shortcuts work even before the user has clicked any control.
+        setWantsKeyboardFocus(true);
     }
 
     int expandedBrowserHeight() const noexcept {
         return juce::jmax(200, getHeight() * 60 / 100);
+    }
+
+    /** Handles application-wide keyboard shortcuts: Alt+letter opens a top-level
+        menu or focuses a transport control, Ctrl+letter triggers a File action
+        or opens the effect browser.
+
+        @note Matching is done with KeyPress::operator==() rather than by reading
+        getTextCharacter() directly because on Windows, holding Ctrl makes the OS translate
+        the keystroke to a C0 control character (e.g. Ctrl+N becomes 0x0E), which
+        JUCE then discards, leaving getTextCharacter() == 0 for every Ctrl shortcut.
+        operator==() treats a zero textCharacter on either side as a wildcard and
+        compares keyCode case-insensitively instead, so it works for both Alt and Ctrl combinations. */
+    bool keyPressed(const juce::KeyPress &key) override {
+        using juce::KeyPress;
+        using juce::ModifierKeys;
+
+        if (key == KeyPress('f', ModifierKeys::altModifier, 0)) { m_menuBar.openMenu(0); return true; } // File
+        if (key == KeyPress('a', ModifierKeys::altModifier, 0)) { m_menuBar.openMenu(1); return true; } // Audio
+        if (key == KeyPress('h', ModifierKeys::altModifier, 0)) { m_menuBar.openMenu(2); return true; } // Help
+
+        if (key == KeyPress('i', ModifierKeys::altModifier, 0)) { m_transportBar.focusInputDevice(); return true; }
+        if (key == KeyPress('o', ModifierKeys::altModifier, 0)) { m_transportBar.focusOutputDevice(); return true; }
+        if (key == KeyPress('s', ModifierKeys::altModifier, 0)) { m_transportBar.triggerStartStop(); return true; }
+
+        if (key == KeyPress('n', ModifierKeys::commandModifier, 0)) { m_menuBar.triggerNewChain(); return true; }
+        if (key == KeyPress('s', ModifierKeys::commandModifier, 0)) { m_menuBar.triggerSavePreset(); return true; }
+        if (key == KeyPress('o', ModifierKeys::commandModifier, 0)) { m_menuBar.triggerLoadPreset(); return true; }
+        if (key == KeyPress('e', ModifierKeys::commandModifier, 0)) { m_browserPanel.expandForSlot(); return true; }
+
+        // Fallback effect-browser navigation: the catalogue handles these
+        // itself once it has actual keyboard focus, but this also makes them
+        // work right after Ctrl+E, before that focus transfer has settled.
+        if (m_browserPanel.isExpanded()) {
+            if (key.isKeyCode(KeyPress::leftKey))  { m_browserPanel.moveCatalogueHighlight(0, -1); return true; }
+            if (key.isKeyCode(KeyPress::rightKey)) { m_browserPanel.moveCatalogueHighlight(0, 1);  return true; }
+            if (key.isKeyCode(KeyPress::upKey))    { m_browserPanel.moveCatalogueHighlight(-1, 0); return true; }
+            if (key.isKeyCode(KeyPress::downKey))  { m_browserPanel.moveCatalogueHighlight(1, 0);  return true; }
+
+            if (key.isKeyCode(KeyPress::returnKey) || key.isKeyCode(KeyPress::spaceKey)) {
+                m_browserPanel.addHighlightedEffect();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     void resized() override {
@@ -162,6 +210,7 @@ MainWindow::MainWindow(const juce::String &name,
       m_uiRegistry(uiRegistry) {
     setUsingNativeTitleBar(true);
     setResizable(true, true);
+    setResizeLimits(k_minWidth, k_minHeight, 0x3fffffff, 0x3fffffff);
 
     auto *content = new MainContentComponent(controller, uiRegistry);
     content->setSize(1050, 720);
@@ -169,6 +218,8 @@ MainWindow::MainWindow(const juce::String &name,
 
     centreWithSize(getWidth(), getHeight());
     setVisible(true);
+
+    content->grabKeyboardFocus();
 }
 
 void MainWindow::closeButtonPressed() {

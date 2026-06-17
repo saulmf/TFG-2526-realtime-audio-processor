@@ -17,6 +17,8 @@ juce_add_gui_app(RealtimeAudioProcessor
         PRODUCT_NAME "RealtimeAudioProcessor"
         COMPANY_NAME "Saul Martin"
         BUNDLE_ID    "com.saul.realtimeaudioprocessor"
+        ICON_BIG     "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/logo.png"
+        ICON_SMALL   "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/logo.png"
 )
 
 # All source files
@@ -102,3 +104,5 @@ target_link_libraries(RealtimeAudioProcessor PRIVATE
         juce::juce_recommended_config_flags
         juce::juce_recommended_warning_flags
 )
+
+add_subdirectory(tests)

@@ -6,6 +6,7 @@ public:
     EffectCatalogueComponent(ApplicationController &controller, UIRegistry &uiRegistry)
         : m_controller(controller), m_uiRegistry(uiRegistry) {
         setMouseCursor(juce::MouseCursor::PointingHandCursor);
+        setWantsKeyboardFocus(true);
         buildLayout();
     }
 
@@ -52,27 +53,76 @@ public:
     void mouseExit(const juce::MouseEvent &) override { clearHover(); }
 
     void mouseDown(const juce::MouseEvent &e) override {
-        if (m_controller.isRunning())
-            return;
-
         for (const auto &group: m_groups) {
             for (const auto &card: group.cards) {
                 if (card.bounds.contains(e.getPosition())) {
-                    if (m_controller.getNumEffects() >= ApplicationController::k_maxEffects) {
-                        juce::AlertWindow::showMessageBoxAsync(
-                            juce::MessageBoxIconType::WarningIcon,
-                            TRANS("Effect chain full"),
-                            TRANS("The effect chain is full (8 effects maximum). Remove an effect before adding a new one."));
-                        return;
-                    }
-
-                    m_controller.addEffect(card.typeId);
-                    DBG("[EffectBrowserPanel] Added " + card.typeId);
-                    if (onEffectAdded) onEffectAdded();
+                    addEffect(card);
                     return;
                 }
             }
         }
+    }
+
+    bool keyPressed(const juce::KeyPress &key) override {
+        if (key.isKeyCode(juce::KeyPress::leftKey))  { moveHighlight(0, -1); return true; }
+        if (key.isKeyCode(juce::KeyPress::rightKey)) { moveHighlight(0, 1);  return true; }
+        if (key.isKeyCode(juce::KeyPress::upKey))    { moveHighlight(-1, 0); return true; }
+        if (key.isKeyCode(juce::KeyPress::downKey))  { moveHighlight(1, 0);  return true; }
+
+        if (key.isKeyCode(juce::KeyPress::returnKey) || key.isKeyCode(juce::KeyPress::spaceKey)) {
+            addHighlightedEffect();
+            return true;
+        }
+
+        return false;
+    }
+
+    void focusGained(juce::Component::FocusChangeType) override {
+        // Highlight the first card so Enter/Space works immediately, without
+        // requiring an arrow key press first.
+        if (m_hoveredGroup == -1 && !m_groups.empty() && !m_groups[0].cards.empty()) {
+            m_hoveredGroup = 0;
+            m_hoveredCard = 0;
+            repaint();
+        }
+    }
+
+    /** Moves the highlighted card by one row (dGroup) and/or column (dCard), clamped to the grid.
+        If nothing is highlighted yet, lands on the first card regardless of direction. */
+    void moveHighlight(int dGroup, int dCard) {
+        if (m_groups.empty())
+            return;
+
+        int group = m_hoveredGroup;
+        int card = m_hoveredCard;
+
+        if (group < 0) {
+            group = 0;
+            card = 0;
+        } else {
+            group = juce::jlimit(0, static_cast<int>(m_groups.size()) - 1, group + dGroup);
+            card += dCard;
+        }
+
+        card = juce::jlimit(0, static_cast<int>(m_groups[group].cards.size()) - 1, card);
+
+        if (group != m_hoveredGroup || card != m_hoveredCard) {
+            m_hoveredGroup = group;
+            m_hoveredCard = card;
+            repaint();
+        }
+    }
+
+    /** Adds the currently highlighted card's effect to the chain, if any card is highlighted. */
+    void addHighlightedEffect() {
+        if (m_hoveredGroup < 0 || m_hoveredGroup >= static_cast<int>(m_groups.size()))
+            return;
+
+        const auto &group = m_groups[m_hoveredGroup];
+        if (m_hoveredCard < 0 || m_hoveredCard >= static_cast<int>(group.cards.size()))
+            return;
+
+        addEffect(group.cards[m_hoveredCard]);
     }
 
 private:
@@ -177,6 +227,23 @@ private:
         }
     }
 
+    void addEffect(const CardInfo &card) {
+        if (m_controller.isRunning())
+            return;
+
+        if (m_controller.getNumEffects() >= ApplicationController::k_maxEffects) {
+            juce::AlertWindow::showMessageBoxAsync(
+                juce::MessageBoxIconType::WarningIcon,
+                TRANS("Effect chain full"),
+                TRANS("The effect chain is full (8 effects maximum). Remove an effect before adding a new one."));
+            return;
+        }
+
+        m_controller.addEffect(card.typeId);
+        DBG("[EffectBrowserPanel] Added " + card.typeId);
+        if (onEffectAdded) onEffectAdded();
+    }
+
     ApplicationController &m_controller;
     UIRegistry &m_uiRegistry;
     std::vector<CategoryGroup> m_groups;
@@ -227,6 +294,11 @@ void EffectBrowserPanel::toggleExpanded() {
     m_toggleButton.setButtonText(m_isExpanded ? TRANS("v Browse Effects") : TRANS("^ Browse Effects"));
     m_viewport.setVisible(m_isExpanded);
 
+    if (m_isExpanded)
+        m_catalogue->grabKeyboardFocus();
+    else
+        m_toggleButton.grabKeyboardFocus();
+
     if (onExpandedStateChanged)
         onExpandedStateChanged(m_isExpanded);
 }
@@ -237,6 +309,14 @@ void EffectBrowserPanel::expandForSlot() {
 
     if (!m_isExpanded)
         toggleExpanded();
+}
+
+void EffectBrowserPanel::moveCatalogueHighlight(int dGroup, int dCard) {
+    m_catalogue->moveHighlight(dGroup, dCard);
+}
+
+void EffectBrowserPanel::addHighlightedEffect() {
+    m_catalogue->addHighlightedEffect();
 }
 
 void EffectBrowserPanel::paint(juce::Graphics &g) {

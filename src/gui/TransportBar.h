@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -16,6 +17,9 @@
  *   - Start / Stop session button and session status indicator
  *   - Input / Output level meters
  *
+ * The "Input:"/"Output:" labels and the Start/Stop button are underlined at
+ * their first letter and reachable with Alt+I, Alt+O, and Alt+S respectively.
+ *
  * @note onSessionStateChanged is called after every Start or Stop action so that
  * sibling components can react to the new state.
  */
@@ -23,6 +27,8 @@ class TransportBar : public juce::Component {
 public:
     /** Creates the bar, sets up all controls, connects their callbacks, and populates the device lists. */
     explicit TransportBar(ApplicationController &controller);
+
+    ~TransportBar() override;
 
     /** Lays out the device combo boxes, volume slider, start/stop button, level meters, and LED. */
     void resized() override;
@@ -32,6 +38,15 @@ public:
 
     /** Updates the status label and repaints the LED to reflect the current session state. */
     void refreshStatus();
+
+    /** Opens the input-device combo box's dropdown. Used by the Alt+I shortcut. */
+    void focusInputDevice();
+
+    /** Opens the output-device combo box's dropdown. Used by the Alt+O shortcut. */
+    void focusOutputDevice();
+
+    /** Triggers the Start/Stop session button, as if clicked. Used by the Alt+S shortcut. */
+    void triggerStartStop();
 
     // Wired by the parent (MainWindow content component) to notify siblings when the session starts or stops.
     std::function<void()> onSessionStateChanged;
@@ -44,6 +59,10 @@ public:
 private:
     /** Queries the controller for available I/O devices and populates both combo boxes. */
     void populateDeviceLists();
+
+    // Underlines the first letter of the device labels and the start/stop button to show their Alt access key.
+    class MnemonicLookAndFeel;
+    std::unique_ptr<MnemonicLookAndFeel> m_mnemonicLookAndFeel;
 
     ApplicationController &m_controller;
 

@@ -19,6 +19,11 @@
  *
  * @note The expand/collapse transition is animated by the parent via onExpandedStateChanged: the parent animates
  * the panel's bounds so that this component stays unaware of its own position in the hierarchy.
+ *
+ * @note The catalogue can also be driven from the keyboard: moveCatalogueHighlight() and
+ * addHighlightedEffect() are the entry points used for this, both by the catalogue's own
+ * arrow/Enter handling once it has focus, and as a fallback from the parent's global
+ * keyPressed() handler while the browser is expanded.
  */
 class EffectBrowserPanel : public juce::Component {
 public:
@@ -39,6 +44,14 @@ public:
 
     /** Expands the browser if it is currently collapsed. Called when the user clicks an empty slot in the chain panel. */
     void expandForSlot();
+
+    /** Moves the highlighted catalogue card by one row (dGroup) and/or one column (dCard), clamped to the grid.
+        @param dGroup Row delta: -1 for Up, +1 for Down, 0 to stay on the same row.
+        @param dCard Column delta: -1 for Left, +1 for Right, 0 to stay on the same column. */
+    void moveCatalogueHighlight(int dGroup, int dCard);
+
+    /** Adds the currently highlighted catalogue card's effect to the chain, as if it had been clicked. */
+    void addHighlightedEffect();
 
     // Called by the parent to animate the bounds change on toggle.
     std::function<void(bool expanded)> onExpandedStateChanged;

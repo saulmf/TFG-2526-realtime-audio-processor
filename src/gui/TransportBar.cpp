@@ -1,7 +1,66 @@
 #include "TransportBar.h"
 
+class TransportBar::MnemonicLookAndFeel final : public juce::LookAndFeel_V4 {
+public:
+    void drawLabel(juce::Graphics &g, juce::Label &label) override {
+        LookAndFeel_V4::drawLabel(g, label);
+
+        const auto textArea = getLabelBorderSize(label).subtractedFrom(label.getLocalBounds());
+        drawMnemonicUnderline(g, label.getText(), getLabelFont(label), textArea,
+                               label.getJustificationType(),
+                               label.findColour(juce::Label::textColourId)
+                                   .withMultipliedAlpha(label.isEnabled() ? 1.0f : 0.5f));
+    }
+
+    void drawButtonText(juce::Graphics &g, juce::TextButton &button,
+                         bool isMouseOverButton, bool isButtonDown) override {
+        LookAndFeel_V4::drawButtonText(g, button, isMouseOverButton, isButtonDown);
+
+        drawMnemonicUnderline(g, button.getButtonText(), getTextButtonFont(button, button.getHeight()),
+                               button.getLocalBounds(), juce::Justification::centred,
+                               button.findColour(button.getToggleState() ? juce::TextButton::textColourOnId
+                                                                          : juce::TextButton::textColourOffId)
+                                   .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
+    }
+
+private:
+    static void drawMnemonicUnderline(juce::Graphics &g, const juce::String &text, const juce::Font &font,
+                                       juce::Rectangle<int> area, juce::Justification justification,
+                                       juce::Colour colour) {
+        if (text.isEmpty() || area.getWidth() <= 0)
+            return;
+
+        const float fullTextWidth = juce::GlyphArrangement::getStringWidth(font, text);
+        if (fullTextWidth <= 0.0f)
+            return;
+
+        const float scale = juce::jmin(1.0f, static_cast<float>(area.getWidth()) / fullTextWidth);
+        const float textWidth = fullTextWidth * scale;
+
+        float startX;
+        if (justification.testFlags(juce::Justification::horizontallyCentred))
+            startX = static_cast<float>(area.getX()) + (static_cast<float>(area.getWidth()) - textWidth) * 0.5f;
+        else if (justification.testFlags(juce::Justification::right))
+            startX = static_cast<float>(area.getRight()) - textWidth;
+        else
+            startX = static_cast<float>(area.getX());
+
+        const float charWidth = juce::GlyphArrangement::getStringWidth(font, text.substring(0, 1)) * scale;
+        const float textTop = static_cast<float>(area.getY()) + (static_cast<float>(area.getHeight()) - font.getHeight()) * 0.5f;
+        const float underlineY = textTop + font.getAscent() + 2.0f;
+
+        g.setColour(colour);
+        g.drawLine(startX, underlineY, startX + charWidth, underlineY, 1.0f);
+    }
+};
+
 TransportBar::TransportBar(ApplicationController &controller)
     : m_controller(controller) {
+    m_mnemonicLookAndFeel = std::make_unique<MnemonicLookAndFeel>();
+    m_inputLabel.setLookAndFeel(m_mnemonicLookAndFeel.get());
+    m_outputLabel.setLookAndFeel(m_mnemonicLookAndFeel.get());
+    m_startStopButton.setLookAndFeel(m_mnemonicLookAndFeel.get());
+
     // Input device combo box
     addAndMakeVisible(m_inputLabel);
     addAndMakeVisible(m_inputBox);
@@ -97,6 +156,24 @@ TransportBar::TransportBar(ApplicationController &controller)
 
     populateDeviceLists();
     refreshStatus();
+}
+
+TransportBar::~TransportBar() {
+    m_inputLabel.setLookAndFeel(nullptr);
+    m_outputLabel.setLookAndFeel(nullptr);
+    m_startStopButton.setLookAndFeel(nullptr);
+}
+
+void TransportBar::focusInputDevice() {
+    m_inputBox.showPopup();
+}
+
+void TransportBar::focusOutputDevice() {
+    m_outputBox.showPopup();
+}
+
+void TransportBar::triggerStartStop() {
+    m_startStopButton.triggerClick();
 }
 
 void TransportBar::populateDeviceLists() {

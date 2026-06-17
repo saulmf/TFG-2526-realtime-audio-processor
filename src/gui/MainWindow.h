@@ -31,6 +31,9 @@ public:
     void closeButtonPressed() override;
 
 private:
+    static constexpr int k_minWidth = 1000;
+    static constexpr int k_minHeight = 500;
+
     ApplicationController &m_controller;
     UIRegistry &m_uiRegistry;
 

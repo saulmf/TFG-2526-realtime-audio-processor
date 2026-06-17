@@ -13,6 +13,11 @@
  * Buffer Size and Sample Rate items are greyed out while the session is
  * running, since the audio device cannot be reconfigured mid-stream.
  *
+ * Each top-level menu name is underlined at its first letter and can be opened with Alt+(that letter);
+ * openMenu() is the entry point used for this by the parent's keyPressed() handler.
+ * File actions also have a Ctrl shortcut (New Chain: Ctrl+N, Save Preset: Ctrl+S, Load Preset: Ctrl+O),
+ * exposed as the trigger() methods.
+ *
  * @note onChainChanged is fired after "New Chain" and after a successful "Load Preset" so the parent can refresh the EffectChainPanel.
  */
 class AppMenuBar : public juce::Component,
@@ -54,6 +59,19 @@ public:
         @param topLevelMenuIndex Unused; present to satisfy the interface. */
     void menuItemSelected(int menuItemID, int topLevelMenuIndex) override;
 
+    /** Opens one of the top-level menus, as if it had been clicked. Used by Alt+letter access keys.
+        @param menuIndex Index of the top-level menu (0 = File, 1 = Audio, 2 = Help). */
+    void openMenu(int menuIndex);
+
+    /** Triggers "New Chain" as if selected from the File menu. Used by the Ctrl+N shortcut. */
+    void triggerNewChain();
+
+    /** Triggers "Save Preset..." as if selected from the File menu. Used by the Ctrl+S shortcut. */
+    void triggerSavePreset();
+
+    /** Triggers "Load Preset..." as if selected from the File menu. Used by the Ctrl+O shortcut. */
+    void triggerLoadPreset();
+
 private:
     /** Clears the chain after asking the user for confirmation. */
     void handleNewChain();
@@ -71,6 +89,11 @@ private:
     void handleAbout();
 
     ApplicationController &m_controller;
+
+    // Underlines the first letter of each top-level menu name to show its Alt access key.
+    class MenuBarLookAndFeel;
+    std::unique_ptr<MenuBarLookAndFeel> m_menuBarLookAndFeel;
+
     juce::MenuBarComponent m_menuBarComponent{this};
     std::unique_ptr<juce::FileChooser> m_fileChooser;
 

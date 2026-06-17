@@ -1,12 +1,49 @@
 #include "AppMenuBar.h"
 
+class AppMenuBar::MenuBarLookAndFeel final : public juce::LookAndFeel_V4 {
+public:
+    void drawMenuBarItem(juce::Graphics &g, int width, int height, int itemIndex,
+                          const juce::String &itemText, bool isMouseOverItem,
+                          bool isMenuOpen, bool isMouseOverBar,
+                          juce::MenuBarComponent &menuBar) override {
+        LookAndFeel_V4::drawMenuBarItem(g, width, height, itemIndex, itemText,
+                                         isMouseOverItem, isMenuOpen, isMouseOverBar, menuBar);
+
+        if (itemText.isEmpty())
+            return;
+
+        const auto font = getMenuBarFont(menuBar, itemIndex, itemText);
+        const float textWidth = juce::GlyphArrangement::getStringWidth(font, itemText);
+
+        if (textWidth > static_cast<float>(width))
+            return;
+
+        if (!menuBar.isEnabled())
+            g.setColour(menuBar.findColour(juce::TextButton::textColourOffId).withMultipliedAlpha(0.5f));
+        else if (isMenuOpen || isMouseOverItem)
+            g.setColour(menuBar.findColour(juce::TextButton::textColourOnId));
+        else
+            g.setColour(menuBar.findColour(juce::TextButton::textColourOffId));
+
+        const float startX = (static_cast<float>(width) - textWidth) * 0.5f;
+        const float charWidth = juce::GlyphArrangement::getStringWidth(font, itemText.substring(0, 1));
+        const float textTop = (static_cast<float>(height) - font.getHeight()) * 0.5f;
+        const float underlineY = textTop + font.getAscent() + 2.0f;
+
+        g.drawLine(startX, underlineY, startX + charWidth, underlineY, 1.0f);
+    }
+};
+
 AppMenuBar::AppMenuBar(ApplicationController &controller)
     : m_controller(controller) {
+    m_menuBarLookAndFeel = std::make_unique<MenuBarLookAndFeel>();
+    m_menuBarComponent.setLookAndFeel(m_menuBarLookAndFeel.get());
     addAndMakeVisible(m_menuBarComponent);
 }
 
 AppMenuBar::~AppMenuBar() {
     m_menuBarComponent.setModel(nullptr);
+    m_menuBarComponent.setLookAndFeel(nullptr);
 }
 
 void AppMenuBar::resized() {
@@ -27,10 +64,25 @@ juce::PopupMenu AppMenuBar::getMenuForIndex(int menuIndex, const juce::String &)
 
     if (menuIndex == 0) // File
     {
-        menu.addItem(fileNewChain, TRANS("New Chain"), !running);
+        juce::PopupMenu::Item newChainItem(TRANS("New Chain"));
+        newChainItem.itemID = fileNewChain;
+        newChainItem.isEnabled = !running;
+        newChainItem.shortcutKeyDescription = "Ctrl+N";
+        menu.addItem(newChainItem);
+
         menu.addSeparator();
-        menu.addItem(fileSavePreset, TRANS("Save Preset..."), !running && m_controller.getNumEffects() > 0);
-        menu.addItem(fileLoadPreset, TRANS("Load Preset..."), !running);
+
+        juce::PopupMenu::Item savePresetItem(TRANS("Save Preset..."));
+        savePresetItem.itemID = fileSavePreset;
+        savePresetItem.isEnabled = !running && m_controller.getNumEffects() > 0;
+        savePresetItem.shortcutKeyDescription = "Ctrl+S";
+        menu.addItem(savePresetItem);
+
+        juce::PopupMenu::Item loadPresetItem(TRANS("Load Preset..."));
+        loadPresetItem.itemID = fileLoadPreset;
+        loadPresetItem.isEnabled = !running;
+        loadPresetItem.shortcutKeyDescription = "Ctrl+O";
+        menu.addItem(loadPresetItem);
     } else if (menuIndex == 1) // Audio
     {
         // Buffer Size submenu
@@ -107,6 +159,38 @@ void AppMenuBar::menuItemSelected(int menuItemID, int /*topLevelMenuIndex*/) {
     }
 }
 
+
+void AppMenuBar::openMenu(int menuIndex) {
+    m_menuBarComponent.showMenu(menuIndex);
+}
+
+void AppMenuBar::triggerNewChain() {
+    if (m_controller.isRunning()) {
+        if (onErrorMessage) onErrorMessage(TRANS("Stop the audio session before clearing the chain."));
+        return;
+    }
+    handleNewChain();
+}
+
+void AppMenuBar::triggerSavePreset() {
+    if (m_controller.isRunning()) {
+        if (onErrorMessage) onErrorMessage(TRANS("Stop the audio session before saving a preset."));
+        return;
+    }
+    if (m_controller.getNumEffects() == 0) {
+        if (onErrorMessage) onErrorMessage(TRANS("Add at least one effect before saving a preset."));
+        return;
+    }
+    handleSavePreset();
+}
+
+void AppMenuBar::triggerLoadPreset() {
+    if (m_controller.isRunning()) {
+        if (onErrorMessage) onErrorMessage(TRANS("Stop the audio session before loading a preset."));
+        return;
+    }
+    handleLoadPreset();
+}
 
 void AppMenuBar::handleNewChain() {
     juce::AlertWindow::showOkCancelBox(
@@ -217,6 +301,13 @@ namespace {
                 {
                     TRANS("Presets:"),
                     TRANS("Use File > Save Preset... / Load Preset... to store and recall the full effect chain.")
+                },
+
+                {
+                    TRANS("Keyboard shortcuts:"),
+                    TRANS("Alt+F, Alt+A, and Alt+H open the File, Audio, and Help menus.") + "\n"
+                    + TRANS("Alt+I and Alt+O open the input and output device lists; Alt+S starts or stops the session.") + "\n"
+                    + TRANS("Ctrl+N clears the chain, Ctrl+S saves a preset, Ctrl+O loads one, and Ctrl+E opens the effect browser.")
                 },
             };
 
