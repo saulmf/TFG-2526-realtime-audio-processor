@@ -294,8 +294,13 @@ namespace {
                 },
 
                 {
+                    TRANS("Adjusting parameters:"),
+                    TRANS("Rotate the knobs on each effect card using vertical drag (click and drag up or down) or the mouse scroll wheel.")
+                },
+
+                {
                     TRANS("Reordering effects:"),
-                    TRANS("Drag an effect card by its title bar and drop it onto another slot.")
+                    TRANS("Drag an effect card by its title bar and drop it onto the card you want to swap positions with.")
                 },
 
                 {
