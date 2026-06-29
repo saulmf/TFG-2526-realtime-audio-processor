@@ -134,7 +134,7 @@ public:
                                          });
         m_uiRegistry->registerDescriptor("highpass", {
                                              TRANS("High-Pass Filter"), "Filtering", "HPF",
-                                             juce::Colour(0xFF0891B2), juce::Colours::white,
+                                             juce::Colour(0xFF077A97), juce::Colours::white,
                                              TRANS(
                                                  "Passes frequencies above the cutoff, removing low-end rumble or bass build-up."),
                                              {
