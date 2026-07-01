@@ -11,6 +11,17 @@ A real-time multi-effects audio processor that simulates a virtual guitar pedalb
 
 The application receives a mono audio signal from an external input device (e.g. a guitar connected via an audio interface), routes it through a configurable chain of up to 8 effects, and outputs the processed signal in real time. Each effect can be individually enabled, reordered, and tuned - replicating the behaviour of a physical pedalboard.
 
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/a2ceb9ad-9df0-454c-b425-7606cb9b7d32"
+    alt="Main Window View"
+    width="700">
+</p>
+
+<p align="center">
+  <em>Main Window View of the application.</em>
+</p>
+
 ---
 
 ## Effects
