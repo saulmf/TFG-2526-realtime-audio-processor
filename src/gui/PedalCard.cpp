@@ -74,7 +74,7 @@ PedalCard::PedalCard(IAudioEffect &effect,
     m_removeButton.onClick = [this] { if (onRemoveRequested) onRemoveRequested(); };
     addAndMakeVisible(m_removeButton);
 
-    setTooltip(descriptor.tooltip);
+    setTooltip(juce::translate(descriptor.tooltip));
 
     buildKnobs();
 }

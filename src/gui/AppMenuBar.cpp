@@ -1,5 +1,7 @@
 #include "AppMenuBar.h"
 
+#include <AppTranslations.h>
+
 class AppMenuBar::MenuBarLookAndFeel final : public juce::LookAndFeel_V4 {
 public:
     void drawMenuBarItem(juce::Graphics &g, int width, int height, int itemIndex,
@@ -10,6 +12,13 @@ public:
                                          isMouseOverItem, isMenuOpen, isMouseOverBar, menuBar);
 
         if (itemText.isEmpty())
+            return;
+
+        // Only draw the underline when the title's first letter matches the Alt+key shortcut for this menu (F/A/H/L).
+        static constexpr char shortcuts[] = { 'f', 'a', 'h', 'l' };
+        if (itemIndex < 0 || itemIndex >= static_cast<int>(std::size(shortcuts)))
+            return;
+        if (juce::CharacterFunctions::toLowerCase(itemText[0]) != shortcuts[itemIndex])
             return;
 
         const auto font = getMenuBarFont(menuBar, itemIndex, itemText);
@@ -54,7 +63,7 @@ void AppMenuBar::resized() {
 // MenuBarModel
 
 juce::StringArray AppMenuBar::getMenuBarNames() {
-    return {TRANS("File"), TRANS("Audio"), TRANS("Help")};
+    return {TRANS("File"), TRANS("Audio"), TRANS("Help"), TRANS("Language")};
 }
 
 juce::PopupMenu AppMenuBar::getMenuForIndex(int menuIndex, const juce::String &) {
@@ -110,6 +119,11 @@ juce::PopupMenu AppMenuBar::getMenuForIndex(int menuIndex, const juce::String &)
         menu.addItem(helpHowToUse, TRANS("How to use..."));
         menu.addSeparator();
         menu.addItem(helpAbout, TRANS("About..."));
+    } else if (menuIndex == 3) // Language
+    {
+        const bool isSpanish = (juce::LocalisedStrings::getCurrentMappings() != nullptr);
+        menu.addItem(languageEnglish, "English", true, !isSpanish);
+        menu.addItem(languageEspanol, juce::String::fromUTF8("Espa\xc3\xb1ol"), true, isSpanish);
     }
 
     return menu;
@@ -156,6 +170,24 @@ void AppMenuBar::menuItemSelected(int menuItemID, int /*topLevelMenuIndex*/) {
             m_controller.setSampleRate(rates[idx]);
             if (onSettingsChanged) onSettingsChanged();
         }
+        return;
+    }
+
+    // Language selection - set the global mapping here, then notify UI to refresh
+    if (menuItemID == languageEnglish) {
+        juce::LocalisedStrings::setCurrentMappings(nullptr);
+        if (onLanguageChanged) onLanguageChanged(false);
+        menuItemsChanged();
+        return;
+    }
+    if (menuItemID == languageEspanol) {
+        juce::LocalisedStrings::setCurrentMappings(
+            new juce::LocalisedStrings(
+                juce::String::fromUTF8(AppTranslations::es_txt,
+                                       AppTranslations::es_txtSize),
+                false));
+        if (onLanguageChanged) onLanguageChanged(true);
+        menuItemsChanged();
     }
 }
 
@@ -250,7 +282,7 @@ void AppMenuBar::handleLoadPreset() {
                     juce::AlertWindow::showOkCancelBox(
                         juce::MessageBoxIconType::WarningIcon,
                         TRANS("Preset loaded with warnings"),
-                        TRANS("The following effects were not recognized and could not be loaded: ") + list + ".\n\n"
+                        TRANS("The following effects were not recognized and could not be loaded:") + " " + list + ".\n\n"
                         + TRANS("You can keep the effects that were loaded, or clear the chain entirely."),
                         TRANS("Keep loaded"),
                         TRANS("Clear chain"),
@@ -310,7 +342,7 @@ namespace {
 
                 {
                     TRANS("Keyboard shortcuts:"),
-                    TRANS("Alt+F, Alt+A, and Alt+H open the File, Audio, and Help menus.") + "\n"
+                    TRANS("Alt+F, Alt+A, Alt+H, and Alt+L open the File, Audio, Help, and Language menus.") + "\n"
                     + TRANS("Alt+I and Alt+O open the input and output device lists; Alt+S starts or stops the session.") + "\n"
                     + TRANS("Ctrl+N clears the chain, Ctrl+S saves a preset, Ctrl+O loads one, and Ctrl+E opens the effect browser.")
                 },

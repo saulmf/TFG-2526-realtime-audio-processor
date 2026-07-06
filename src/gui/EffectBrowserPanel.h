@@ -45,6 +45,9 @@ public:
     /** Expands the browser if it is currently collapsed. Called when the user clicks an empty slot in the chain panel. */
     void expandForSlot();
 
+    /** Re-applies all translated strings after a runtime language change. */
+    void refreshLanguage();
+
     /** Moves the highlighted catalogue card by one row (dGroup) and/or one column (dCard), clamped to the grid.
         @param dGroup Row delta: -1 for Up, +1 for Down, 0 to stay on the same row.
         @param dCard Column delta: -1 for Left, +1 for Right, 0 to stay on the same column. */

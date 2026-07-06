@@ -164,6 +164,20 @@ TransportBar::~TransportBar() {
     m_startStopButton.setLookAndFeel(nullptr);
 }
 
+void TransportBar::refreshLanguage() {
+    m_inputLabel.setText(TRANS("Input:"), juce::dontSendNotification);
+    m_outputLabel.setText(TRANS("Output:"), juce::dontSendNotification);
+    m_volLabel.setText(TRANS("Vol:"), juce::dontSendNotification);
+    m_startStopButton.setButtonText(TRANS(m_controller.isRunning() ? "Stop session" : "Start session"));
+    m_inputBox.setTooltip(TRANS("Select the audio input device (e.g. your USB audio interface)."));
+    m_outputBox.setTooltip(TRANS("Select the audio output device for the processed signal."));
+    m_startStopButton.setTooltip(TRANS("Start or stop the real-time audio processing session."));
+    m_volumeSlider.setTooltip(TRANS("Adjusts the overall output level sent to the audio device."));
+    m_inputLevelMeter.setTooltip(TRANS("Shows the input signal level from the selected audio device."));
+    m_outputLevelMeter.setTooltip(TRANS("Shows the output signal level after all effects and master volume."));
+    refreshStatus();
+}
+
 void TransportBar::focusInputDevice() {
     m_inputBox.showPopup();
 }

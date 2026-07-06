@@ -39,6 +39,9 @@ public:
     /** Updates the status label and repaints the LED to reflect the current session state. */
     void refreshStatus();
 
+    /** Re-applies all translated strings after a runtime language change. */
+    void refreshLanguage();
+
     /** Opens the input-device combo box's dropdown. Used by the Alt+I shortcut. */
     void focusInputDevice();
 

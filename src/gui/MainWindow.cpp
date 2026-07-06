@@ -82,6 +82,15 @@ public:
             m_statusBar.refresh();
         };
 
+        // Refresh all components that store translated strings after a language change.
+        // (setCurrentMappings is called by AppMenuBar before this fires.)
+        m_menuBar.onLanguageChanged = [this](bool /*spanish*/) {
+            m_transportBar.refreshLanguage();
+            m_browserPanel.refreshLanguage();
+            m_statusBar.refresh();
+            m_chainPanel.refreshChain();
+        };
+
         // Refresh chain visuals and status bar when session starts/stops
         m_transportBar.onSessionStateChanged = [this] {
             m_chainPanel.repaint();
@@ -131,9 +140,12 @@ public:
         using juce::KeyPress;
         using juce::ModifierKeys;
 
+        if (key == KeyPress(KeyPress::F1Key)) { juce::URL("https://saulmf.github.io/TFG-2526-realtime-audio-processor/").launchInDefaultBrowser(); return true; }
+
         if (key == KeyPress('f', ModifierKeys::altModifier, 0)) { m_menuBar.openMenu(0); return true; } // File
         if (key == KeyPress('a', ModifierKeys::altModifier, 0)) { m_menuBar.openMenu(1); return true; } // Audio
         if (key == KeyPress('h', ModifierKeys::altModifier, 0)) { m_menuBar.openMenu(2); return true; } // Help
+        if (key == KeyPress('l', ModifierKeys::altModifier, 0)) { m_menuBar.openMenu(3); return true; } // Language
 
         if (key == KeyPress('i', ModifierKeys::altModifier, 0)) { m_transportBar.focusInputDevice(); return true; }
         if (key == KeyPress('o', ModifierKeys::altModifier, 0)) { m_transportBar.focusOutputDevice(); return true; }

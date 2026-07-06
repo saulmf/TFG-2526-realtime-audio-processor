@@ -84,10 +84,9 @@ public:
         // 4. UI registry - visual descriptors for each effect type, keyed by TYPE_ID
         m_uiRegistry = std::make_unique<UIRegistry>();
         m_uiRegistry->registerDescriptor("overdrive", {
-                                             TRANS("Overdrive"), "Nonlinear", "OD",
+                                             "Overdrive", "Nonlinear", "OD",
                                              juce::Colour(0xFFB45309), juce::Colours::white,
-                                             TRANS(
-                                                 "Valve-style soft saturation. Adds warm harmonic distortion and increased sustain."),
+                                             "Valve-style soft saturation. Adds warm harmonic distortion and increased sustain.",
                                              {
                                                  {"drive", "How hard the signal is pushed into saturation."},
                                                  {"level", "Output volume of the effect."},
@@ -95,10 +94,9 @@ public:
                                              }
                                          });
         m_uiRegistry->registerDescriptor("hardclip", {
-                                             TRANS("Hard Clipping"), "Nonlinear", "CLIP",
+                                             "Hard Clipping", "Nonlinear", "CLIP",
                                              juce::Colour(0xFFB91C1C), juce::Colours::white,
-                                             TRANS(
-                                                 "Hard digital clipping for aggressive distortion. Produces a sharp, heavily saturated sound."),
+                                             "Hard digital clipping for aggressive distortion. Produces a sharp, heavily saturated sound.",
                                              {
                                                  {"gain", "How hard the signal is pushed into the hard clipper."},
                                                  {"level", "Output volume of the effect."},
@@ -106,20 +104,18 @@ public:
                                              }
                                          });
         m_uiRegistry->registerDescriptor("fuzz", {
-                                             TRANS("Fuzz"), "Nonlinear", "FUZZ",
+                                             "Fuzz", "Nonlinear", "FUZZ",
                                              juce::Colour(0xFF7C3AED), juce::Colours::yellow,
-                                             TRANS(
-                                                 "Classic fuzz circuit emulation. Creates a thick, sustaining and harmonically rich tone."),
+                                             "Classic fuzz circuit emulation. Creates a thick, sustaining and harmonically rich tone.",
                                              {
                                                  {"fuzz", "Intensity of the fuzz effect."},
                                                  {"level", "Output volume of the effect."}
                                              }
                                          });
         m_uiRegistry->registerDescriptor("parametriceq", {
-                                             TRANS("Parametric EQ"), "Filtering", "EQ",
+                                             "Parametric EQ", "Filtering", "EQ",
                                              juce::Colour(0xFF0369A1), juce::Colours::white,
-                                             TRANS(
-                                                 "Three-band parametric equaliser. Shape tone by adjusting frequency, gain and bandwidth (Q) per band."),
+                                             "Three-band parametric equaliser. Shape tone by adjusting frequency, gain and bandwidth (Q) per band.",
                                              {
                                                  {"freq1", "Center frequency of this EQ band."},
                                                  {"gain1", "Boosts or cuts the level at this frequency."},
@@ -133,30 +129,27 @@ public:
                                              }
                                          });
         m_uiRegistry->registerDescriptor("highpass", {
-                                             TRANS("High-Pass Filter"), "Filtering", "HPF",
+                                             "High-Pass Filter", "Filtering", "HPF",
                                              juce::Colour(0xFF077A97), juce::Colours::white,
-                                             TRANS(
-                                                 "Passes frequencies above the cutoff, removing low-end rumble or bass build-up."),
+                                             "Passes frequencies above the cutoff, removing low-end rumble or bass build-up.",
                                              {
                                                  {"cutoff", "Frequencies below this point are removed."},
                                                  {"order", "Steepness of the filter: higher = sharper rolloff."}
                                              }
                                          });
         m_uiRegistry->registerDescriptor("lowpass", {
-                                             TRANS("Low-Pass Filter"), "Filtering", "LPF",
+                                             "Low-Pass Filter", "Filtering", "LPF",
                                              juce::Colour(0xFF1D4ED8), juce::Colours::white,
-                                             TRANS(
-                                                 "Passes frequencies below the cutoff, removing harshness or high-frequency content."),
+                                             "Passes frequencies below the cutoff, removing harshness or high-frequency content.",
                                              {
                                                  {"cutoff", "Frequencies above this point are removed."},
                                                  {"order", "Steepness of the filter: higher = sharper rolloff."}
                                              }
                                          });
         m_uiRegistry->registerDescriptor("digitaldelay", {
-                                             TRANS("Digital Delay"), "Time-Based", "DLY",
+                                             "Digital Delay", "Time-Based", "DLY",
                                              juce::Colour(0xFF065F46), juce::Colours::lightgreen,
-                                             TRANS(
-                                                 "Echo effect with adjustable time, feedback and mix. Creates rhythmic repetitions of the signal."),
+                                             "Echo effect with adjustable time, feedback and mix. Creates rhythmic repetitions of the signal.",
                                              {
                                                  {
                                                      "delayTime",
@@ -167,10 +160,9 @@ public:
                                              }
                                          });
         m_uiRegistry->registerDescriptor("reverb", {
-                                             TRANS("Reverb"), "Time-Based", "VERB",
+                                             "Reverb", "Time-Based", "VERB",
                                              juce::Colour(0xFF1E3A5F), juce::Colour(0xFFAAD4F5),
-                                             TRANS(
-                                                 "Simulates room reverberation. Controls room size, damping, stereo width and wet/dry mix."),
+                                             "Simulates room reverberation. Controls room size, damping, stereo width and wet/dry mix.",
                                              {
                                                  {
                                                      "roomSize",

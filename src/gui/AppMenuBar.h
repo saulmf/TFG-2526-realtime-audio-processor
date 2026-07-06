@@ -40,15 +40,18 @@ public:
     /** Fired with an error message when an action fails (e.g. preset file could not be written). */
     std::function<void(const juce::String &)> onErrorMessage;
 
+    /** Fired when the user selects a language; argument is true for Spanish, false for English. */
+    std::function<void(bool spanish)> onLanguageChanged;
+
     static constexpr int k_height = 24; ///< Fixed height of the menu bar in pixels.
 
-    /** Returns the top-level menu names: File, Audio Settings, and Help. */
+    /** Returns the top-level menu names: File, Audio, Help, and Language. */
     juce::StringArray getMenuBarNames() override;
 
     /**
      * Builds and returns the popup menu for the given top-level index.
      * Audio settings items are greyed out while the session is running.
-     * @param menuIndex Index of the top-level menu (0 = File, 1 = Audio Settings, 2 = Help).
+     * @param menuIndex Index of the top-level menu (0 = File, 1 = Audio, 2 = Help, 3 = Language).
      * @param menuName Display name of the menu (unused, present to satisfy the interface).
      * @return Fully populated PopupMenu for the requested index.
      */
@@ -60,7 +63,7 @@ public:
     void menuItemSelected(int menuItemID, int topLevelMenuIndex) override;
 
     /** Opens one of the top-level menus, as if it had been clicked. Used by Alt+letter access keys.
-        @param menuIndex Index of the top-level menu (0 = File, 1 = Audio, 2 = Help). */
+        @param menuIndex Index of the top-level menu (0 = File, 1 = Audio, 2 = Help, 3 = Language). */
     void openMenu(int menuIndex);
 
     /** Triggers "New Chain" as if selected from the File menu. Used by the Ctrl+N shortcut. */
@@ -114,6 +117,9 @@ private:
 
         helpHowToUse = 3001,
         helpAbout = 3002,
+
+        languageEnglish = 4001,
+        languageEspanol = 4002,
     };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AppMenuBar)

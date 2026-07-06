@@ -44,7 +44,7 @@ public:
             && m_hoveredCard < static_cast<int>(m_groups[m_hoveredGroup].cards.size())) {
             const auto *desc = m_groups[m_hoveredGroup].cards[m_hoveredCard].descriptor;
             if (desc != nullptr)
-                return desc->tooltip;
+                return juce::translate(desc->tooltip);
         }
         return {};
     }
@@ -301,6 +301,12 @@ void EffectBrowserPanel::toggleExpanded() {
 
     if (onExpandedStateChanged)
         onExpandedStateChanged(m_isExpanded);
+}
+
+void EffectBrowserPanel::refreshLanguage() {
+    m_toggleButton.setButtonText(m_isExpanded ? TRANS("v Browse Effects") : TRANS("^ Browse Effects"));
+    m_toggleButton.setTooltip(TRANS("Open or close the effect browser to add new effects to the chain."));
+    m_catalogue->repaint();
 }
 
 void EffectBrowserPanel::expandForSlot() {

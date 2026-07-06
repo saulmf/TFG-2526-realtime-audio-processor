@@ -1,109 +1,119 @@
 language: Español
 countries: ES MX AR CO CL PE VE
 
-Input: = Entrada:
-Output: = Salida:
-Vol: = Vol:
-Start session = Iniciar sesión
-Stop session = Detener sesión
-RUNNING = EN EJECUCIÓN
-Stopped = Detenido
-^ Browse Effects = ^ Explorar efectos
-v Browse Effects = v Explorar efectos
+"Input:" "Entrada:"
+"Output:" "Salida:"
+"Vol:" "Vol:"
+"Start session" "Iniciar sesión"
+"Stop session" "Detener sesión"
+"RUNNING" "EN EJECUCIÓN"
+"Stopped" "Detenido"
+"^ Browse Effects" "^ Explorar efectos"
+"v Browse Effects" "v Explorar efectos"
 
-File = Archivo
-New Chain = Nueva cadena
-Clear the current effect chain? This cannot be undone. = ¿Limpiar la cadena de efectos? Esta acción no se puede deshacer.
-Clear = Limpiar
-Cancel = Cancelar
-Save Preset... = Guardar preset...
-Load Preset... = Cargar preset...
-Save Preset = Guardar preset
-Load Preset = Cargar preset
-Audio = Audio
-Buffer Size = Tamaño de búfer
-samples = muestras
-Sample Rate = Frecuencia de muestreo
-Help = Ayuda
-How to use... = Cómo usar...
-About... = Acerca de...
-About Realtime Audio Processor = Acerca de Realtime Audio Processor
-How to use = Cómo usar
-Starting a session: = Iniciar una sesión:
-1. Select your audio input device (e.g. USB interface). = 1. Selecciona tu dispositivo de entrada de audio (p. ej. interfaz USB).
-2. Select your audio output device. = 2. Selecciona tu dispositivo de salida de audio.
-3. Click "Start session". The LED turns green when active. = 3. Haz clic en "Iniciar sesión". El LED se pone verde cuando está activo.
-Adding effects: = Añadir efectos:
-Click any empty slot (+) in the chain, or open "Browse Effects" at the bottom and click a pedal thumbnail. The effect is placed at that position. = Haz clic en cualquier ranura vacía (+) de la cadena, o abre "Explorar efectos" en la parte inferior y haz clic en una miniatura de pedal. El efecto se coloca en esa posición.
-Enabling / disabling an effect: = Activar / desactivar un efecto:
-Click the title bar of any effect card to toggle bypass. The LED turns red when bypassed. = Haz clic en la barra de título de cualquier tarjeta de efecto para activar o desactivar el bypass. El LED se pone rojo cuando está desactivado.
-Reordering effects: = Reordenar efectos:
-Drag an effect card by its title bar and drop it onto another slot. = Arrastra una tarjeta de efecto por su barra de título y suéltala en otra ranura.
-Presets: = Presets:
-Use File > Save Preset... / Load Preset... to store and recall the full effect chain. = Usa Archivo > Guardar preset... / Cargar preset... para guardar y recuperar la cadena de efectos completa.
-Real-time multi-effects processor for electric guitar. = Procesador de efectos en tiempo real para guitarra eléctrica.
-Final Degree Project (TFG) - Software Engineering. = Trabajo de Fin de Grado (TFG) - Ingeniería del Software.
-Made by Saul Martin. = Realizado por Saul Martin.
-Set value... = Establecer valor...
-Reset to default = Restablecer valor predeterminado
-Copy value = Copiar valor
+"File" "Archivo"
+"New Chain" "Nueva cadena"
+"Clear the current effect chain? This cannot be undone." "¿Limpiar la cadena de efectos? Esta acción no se puede deshacer."
+"Clear" "Limpiar"
+"Cancel" "Cancelar"
+"Save Preset..." "Guardar preset..."
+"Load Preset..." "Cargar preset..."
+"Save Preset" "Guardar preset"
+"Load Preset" "Cargar preset"
+"Audio" "Audio"
+"Buffer Size" "Tamaño de búfer"
+"samples" "muestras"
+"Sample Rate" "Frecuencia de muestreo"
+"Language" "Idioma"
+"English" "Inglés"
+"Help" "Ayuda"
+"How to use..." "Cómo usar..."
+"About..." "Acerca de..."
+"About Realtime Audio Processor" "Acerca de Realtime Audio Processor"
+"How to use" "Cómo usar"
+"Starting a session:" "Iniciar una sesión:"
+"1. Select your audio input device (e.g. USB interface)." "1. Selecciona tu dispositivo de entrada de audio (p. ej. interfaz USB)."
+"2. Select your audio output device." "2. Selecciona tu dispositivo de salida de audio."
+"3. Click \"Start session\". The LED turns green when active." "3. Haz clic en \"Iniciar sesión\". El LED se pone verde cuando la sesión está activa."
+"Adding effects:" "Añadir efectos:"
+"Click any empty slot (+) in the chain, or open \"Browse Effects\" at the bottom and click a pedal thumbnail. The effect is placed at that position." "Haz clic en cualquier ranura vacía (+) de la cadena, o abre \"Explorar efectos\" en la parte inferior y haz clic en una miniatura de pedal. El efecto se coloca en esa posición."
+"Enabling / disabling an effect:" "Activar / desactivar un efecto:"
+"Click the title bar of any effect card to toggle bypass. The LED turns red when bypassed." "Haz clic en la barra de título de cualquier efecto para activar o desactivar el bypass. El LED se pone rojo cuando está desactivado."
+"Adjusting parameters:" "Ajustar parámetros:"
+"Rotate the knobs on each effect card using vertical drag (click and drag up or down) or the mouse scroll wheel." "Gira los controles de cada efecto arrastrando verticalmente (clic y arrastra hacia arriba o abajo) o con la rueda del ratón."
+"Reordering effects:" "Reordenar efectos:"
+"Drag an effect card by its title bar and drop it onto the card you want to swap positions with." "Arrastra un efecto por su barra de título y suéltalo sobre el efecto con el que quieres intercambiar el orden."
+"Presets:" "Presets:"
+"Use File > Save Preset... / Load Preset... to store and recall the full effect chain." "Usa Archivo > Guardar preset... / Cargar preset... para guardar y recuperar la cadena de efectos."
+"Keyboard shortcuts:" "Atajos de teclado:"
+"Alt+F, Alt+A, Alt+H, and Alt+L open the File, Audio, Help, and Language menus." "Alt+F, Alt+A, Alt+H y Alt+L abren los menús Archivo, Audio, Ayuda e Idioma."
+"Alt+I and Alt+O open the input and output device lists; Alt+S starts or stops the session." "Alt+I y Alt+O abren las listas de dispositivos de entrada y salida; Alt+S inicia o detiene la sesión."
+"Ctrl+N clears the chain, Ctrl+S saves a preset, Ctrl+O loads one, and Ctrl+E opens the effect browser." "Ctrl+N limpia la cadena, Ctrl+S guarda un preset, Ctrl+O carga uno y Ctrl+E abre el explorador de efectos."
+"Real-time multi-effects processor for electric guitar." "Procesador de efectos en tiempo real para guitarra eléctrica."
+"Final Degree Project (TFG) - Software Engineering." "Trabajo de Fin de Grado (TFG) - Ingeniería del Software."
+"Made by Saul Martin." "Realizado por Saul Martin."
+"Set value..." "Introducir valor..."
+"Reset to default" "Restaurar valor por defecto"
+"Copy value" "Copiar valor"
 
-Error = Error
-Cannot start session = No se puede iniciar la sesión
-No input device selected. Please select an audio input device. = No hay dispositivo de entrada seleccionado. Por favor, selecciona un dispositivo de entrada de audio.
-No output device selected. Please select an audio output device. = No hay dispositivo de salida seleccionado. Por favor, selecciona un dispositivo de salida de audio.
-Failed to save preset. = No se pudo guardar el preset.
-Failed to load preset. = No se pudo cargar el preset.
-Effect chain full = Cadena de efectos llena
-The effect chain is full (8 effects maximum). Remove an effect before adding a new one. = La cadena de efectos está llena (máximo 8 efectos). Elimina un efecto antes de añadir uno nuevo.
+"Cannot start session" "No se puede iniciar la sesión"
+"No input device selected. Please select an audio input device." "No hay ningún dispositivo de entrada seleccionado. Por favor, selecciona uno antes de continuar."
+"No output device selected. Please select an audio output device." "No hay ningún dispositivo de salida seleccionado. Por favor, selecciona uno antes de continuar."
+"Failed to save preset." "No se pudo guardar el preset."
+"Failed to load preset." "No se pudo cargar el preset."
+"Failed to load preset: the file is missing or corrupted." "No se pudo cargar el preset: el archivo no existe o está dañado."
+"Effect chain full" "Cadena de efectos llena"
+"The effect chain is full (8 effects maximum). Remove an effect before adding a new one." "La cadena de efectos está llena (máximo 8 efectos). Elimina algún efecto antes de añadir uno nuevo."
+"Stop the audio session before clearing the chain." "Detén la sesión de audio antes de limpiar la cadena."
+"Stop the audio session before saving a preset." "Detén la sesión de audio antes de guardar un preset."
+"Add at least one effect before saving a preset." "Añade al menos un efecto antes de guardar un preset."
+"Stop the audio session before loading a preset." "Detén la sesión de audio antes de cargar un preset."
+"Stop the audio session before adding effects to the chain." "Detén la sesión de audio antes de añadir efectos a la cadena."
+"Stop the audio session before modifying the effect chain." "Detén la sesión de audio antes de modificar la cadena de efectos."
+"Preset loaded with warnings" "Preset cargado con advertencias"
+"The following effects were not recognized and could not be loaded:" "Los siguientes efectos no se reconocieron y no se pudieron cargar:"
+"You can keep the effects that were loaded, or clear the chain entirely." "Puedes conservar los efectos que sí se cargaron o limpiar la cadena por completo."
+"Keep loaded" "Conservar cargados"
+"Clear chain" "Limpiar cadena"
 
-Nonlinear = No lineal
-Filtering = Filtrado
-Time-Based = Basado en tiempo
+"Nonlinear" "No lineal"
+"Filtering" "Filtrado"
+"Time-Based" "Basado en tiempo"
 
-Overdrive = Overdrive
-Hard Clipping = Distorsión fuerte
-Fuzz = Fuzz
-Parametric EQ = Ecualizador paramétrico
-High-Pass Filter = Filtro paso alto
-Low-Pass Filter = Filtro paso bajo
-Digital Delay = Retardo digital
-Reverb = Reverberación
+"Select the audio input device (e.g. your USB audio interface)." "Selecciona el dispositivo de entrada de audio (p. ej. tu interfaz de audio USB)."
+"Select the audio output device for the processed signal." "Selecciona el dispositivo de salida para la señal procesada."
+"Start or stop the real-time audio processing session." "Inicia o detiene la sesión de procesamiento de audio."
+"Adjusts the overall output level sent to the audio device." "Ajusta el volumen de salida general."
+"Shows the input signal level from the selected audio device." "Muestra el nivel de señal de entrada."
+"Shows the output signal level after all effects and master volume." "Muestra el nivel de señal de salida tras los efectos y el volumen maestro."
+"Open or close the effect browser to add new effects to the chain." "Abre o cierra el explorador de efectos para añadir nuevos efectos a la cadena."
+"Click to enable or bypass this effect." "Haz clic para activar o desactivar este efecto."
 
-Valve-style soft saturation. Adds warm harmonic distortion and increased sustain. = Saturación suave estilo válvula. Añade distorsión armónica cálida y mayor sustain.
-Hard digital clipping for aggressive distortion. Produces a sharp, heavily saturated sound. = Recorte digital duro para distorsión agresiva. Produce un sonido afilado y fuertemente saturado.
-Classic fuzz circuit emulation. Creates a thick, sustaining and harmonically rich tone. = Emulación clásica de circuito fuzz. Crea un tono denso, con mucho sustain y rico en armónicos.
-Three-band parametric equaliser. Shape tone by adjusting frequency, gain and bandwidth (Q) per band. = Ecualizador paramétrico de tres bandas. Moldea el tono ajustando frecuencia, ganancia y anchura de banda (Q) por banda.
-Passes frequencies above the cutoff, removing low-end rumble or bass build-up. = Deja pasar las frecuencias por encima del corte, eliminando rumor grave o acumulación de bajos.
-Passes frequencies below the cutoff, removing harshness or high-frequency content. = Deja pasar las frecuencias por debajo del corte, eliminando aspereza o contenido de alta frecuencia.
-Echo effect with adjustable time, feedback and mix. Creates rhythmic repetitions of the signal. = Efecto de eco con tiempo, retroalimentación y mezcla ajustables. Crea repeticiones rítmicas de la señal.
-Simulates room reverberation. Controls room size, damping, stereo width and wet/dry mix. = Simula la reverberación de una sala. Controla tamaño, amortiguación, anchura estéreo y mezcla wet/dry.
+"How hard the signal is pushed into saturation." "Controla cuánto se empuja la señal hacia la saturación."
+"How hard the signal is pushed into the hard clipper." "Controla la intensidad del clipping."
+"Intensity of the fuzz effect." "Intensidad del fuzz."
+"Output volume of the effect." "Volumen de salida del efecto."
+"Adjusts the brightness of the tone." "Ajusta el brillo del tono."
+"Adjusts the brightness of the distorted tone." "Ajusta el brillo del tono distorsionado."
+"Center frequency of this EQ band." "Frecuencia central de esta banda del EQ."
+"Boosts or cuts the level at this frequency." "Aumenta o reduce el nivel en esa frecuencia."
+"Bandwidth: higher values affect a narrower frequency range." "Ancho de banda: valores más altos afectan un rango de frecuencias más estrecho."
+"Frequencies below this point are removed." "Elimina las frecuencias por debajo de este punto."
+"Frequencies above this point are removed." "Elimina las frecuencias por encima de este punto."
+"Steepness of the filter: higher = sharper rolloff." "Pendiente del filtro: valores más altos dan un corte más pronunciado."
+"Time between the original signal and its echo, in milliseconds." "Tiempo entre la señal original y el eco, en milisegundos."
+"How many times the echo repeats before fading." "Número de repeticiones del eco antes de que se desvanezca."
+"Balance between the original (dry) and delayed (wet) signal." "Mix entre la señal original (dry) y la señal con delay (wet)."
+"Size of the simulated room: larger = longer reverb tail." "Tamaño de la sala simulada: valores más altos generan una cola de reverb más larga."
+"High-frequency absorption: higher = darker, shorter decay." "Absorción de altas frecuencias: valores más altos dan un reverb más oscuro y corto."
+"Stereo spread of the reverb effect." "Amplitud del campo estéreo del reverb."
+"Balance between the original (dry) and reverb (wet) signal." "Mix entre la señal original (dry) y la señal con reverb (wet)."
 
-Select the audio input device (e.g. your USB audio interface). = Selecciona el dispositivo de entrada de audio (p. ej. tu interfaz USB).
-Select the audio output device for the processed signal. = Selecciona el dispositivo de salida de audio para la señal procesada.
-Start or stop the real-time audio processing session. = Inicia o detiene la sesión de procesamiento de audio en tiempo real.
-Adjusts the overall output level sent to the audio device. = Ajusta el nivel de salida general enviado al dispositivo de audio.
-Shows the input signal level from the selected audio device. = Muestra el nivel de la señal de entrada del dispositivo de audio seleccionado.
-Shows the output signal level after all effects and master volume. = Muestra el nivel de la señal de salida tras todos los efectos y el volumen maestro.
-Open or close the effect browser to add new effects to the chain. = Abre o cierra el explorador de efectos para añadir nuevos efectos a la cadena.
-Click to enable or bypass this effect. = Haz clic para activar o desactivar este efecto.
-
-How hard the signal is pushed into saturation. = Con qué intensidad se empuja la señal hacia la saturación.
-How hard the signal is pushed into the hard clipper. = Con qué intensidad se empuja la señal hacia el recortador duro.
-Intensity of the fuzz effect. = Intensidad del efecto fuzz.
-Output volume of the effect. = Volumen de salida del efecto.
-Adjusts the brightness of the tone. = Ajusta el brillo del tono.
-Adjusts the brightness of the distorted tone. = Ajusta el brillo del tono distorsionado.
-Center frequency of this EQ band. = Frecuencia central de esta banda del ecualizador.
-Boosts or cuts the level at this frequency. = Aumenta o reduce el nivel en esta frecuencia.
-Bandwidth: higher values affect a narrower frequency range. = Anchura de banda: valores más altos afectan un rango de frecuencias más estrecho.
-Frequencies below this point are removed. = Las frecuencias por debajo de este punto se eliminan.
-Frequencies above this point are removed. = Las frecuencias por encima de este punto se eliminan.
-Steepness of the filter: higher = sharper rolloff. = Pendiente del filtro: mayor = corte más pronunciado.
-Time between the original signal and its echo, in milliseconds. = Tiempo entre la señal original y su eco, en milisegundos.
-How many times the echo repeats before fading. = Cuántas veces se repite el eco antes de desvanecerse.
-Balance between the original (dry) and delayed (wet) signal. = Balance entre la señal original (seca) y la señal retardada (húmeda).
-Size of the simulated room: larger = longer reverb tail. = Tamaño de la sala simulada: mayor = cola de reverberación más larga.
-High-frequency absorption: higher = darker, shorter decay. = Absorción de altas frecuencias: mayor = reverberación más oscura y corta.
-Stereo spread of the reverb effect. = Amplitud estéreo del efecto de reverberación.
-Balance between the original (dry) and reverb (wet) signal. = Balance entre la señal original (seca) y la señal con reverberación (húmeda).
+"Valve-style soft saturation. Adds warm harmonic distortion and increased sustain." "Saturación suave estilo válvula. Añade distorsión armónica cálida y más sustain."
+"Hard digital clipping for aggressive distortion. Produces a sharp, heavily saturated sound." "Hard clipping digital para una distorsión agresiva. Produce un sonido crudo y muy saturado."
+"Classic fuzz circuit emulation. Creates a thick, sustaining and harmonically rich tone." "Emulación de circuito fuzz clásico. Crea un tono denso, con mucho sustain y rico en armónicos."
+"Three-band parametric equaliser. Shape tone by adjusting frequency, gain and bandwidth (Q) per band." "Ecualizador paramétrico de tres bandas. Ajusta la frecuencia, la ganancia y el ancho de banda (Q) de cada banda."
+"Passes frequencies above the cutoff, removing low-end rumble or bass build-up." "Deja pasar las frecuencias por encima del corte. Elimina el exceso de graves o zumbidos de baja frecuencia."
+"Passes frequencies below the cutoff, removing harshness or high-frequency content." "Deja pasar las frecuencias por debajo del corte. Elimina la dureza o el exceso de altas frecuencias."
+"Echo effect with adjustable time, feedback and mix. Creates rhythmic repetitions of the signal." "Efecto de delay con tiempo, feedback y mix ajustables. Crea repeticiones rítmicas de la señal."
+"Simulates room reverberation. Controls room size, damping, stereo width and wet/dry mix." "Simula la reverberación de una sala. Controla el tamaño, el damping, la amplitud estéreo y el mix wet/dry."
