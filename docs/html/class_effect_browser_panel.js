@@ -8,6 +8,7 @@ var class_effect_browser_panel =
     [ "isExpanded", "class_effect_browser_panel.html#a1173882078fe0dfae30b91200e963799", null ],
     [ "moveCatalogueHighlight", "class_effect_browser_panel.html#ae5a5191450eed13e3918a9193f426497", null ],
     [ "paint", "class_effect_browser_panel.html#abbd80dc9aefa54140cad010ce54d3904", null ],
+    [ "refreshLanguage", "class_effect_browser_panel.html#ac9ded8ad885e07d1b5aec906c48bf536", null ],
     [ "resized", "class_effect_browser_panel.html#a4566bca7578697fecf91c1f415d2efdd", null ],
     [ "k_collapsedHeight", "class_effect_browser_panel.html#a7d6600e15fc01e6636f2f95c6fcfc537", null ],
     [ "onEffectAdded", "class_effect_browser_panel.html#a54140247172cd5f8acaa7a107c75a052", null ],

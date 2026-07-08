@@ -6,6 +6,7 @@ var class_transport_bar =
     [ "focusInputDevice", "class_transport_bar.html#adfa8f2dd153d98dd0dbcb56cd48ae4be", null ],
     [ "focusOutputDevice", "class_transport_bar.html#afc20b755ec94430b871e144c7f777708", null ],
     [ "paint", "class_transport_bar.html#a1f4084e20fc3cdd559edb62bb3cdcb6c", null ],
+    [ "refreshLanguage", "class_transport_bar.html#addf920ebba84f4c21291078fca52910d", null ],
     [ "refreshStatus", "class_transport_bar.html#ac731e9f6fd06de7b92003fa05699e459", null ],
     [ "resized", "class_transport_bar.html#af8cd0a2b945e1093c314bb3f414f6c95", null ],
     [ "triggerStartStop", "class_transport_bar.html#a75069de703de121e29bd045a66164d94", null ],

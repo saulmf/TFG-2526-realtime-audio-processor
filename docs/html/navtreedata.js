@@ -49,7 +49,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_algorithmic_reverb_effect_8cpp.html",
-"class_fuzz_effect.html"
+"class_effect_factory.html#a9dca34f964f81feb0f3db288f465ca5f"
 ];
 
 const SYNCONMSG = 'click to disable panel synchronization';

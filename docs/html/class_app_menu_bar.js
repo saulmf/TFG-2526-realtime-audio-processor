@@ -14,5 +14,6 @@ var class_app_menu_bar =
     [ "k_height", "class_app_menu_bar.html#aef3764a57c7bf7e68abc6ef5b0f1b290", null ],
     [ "onChainChanged", "class_app_menu_bar.html#af38ace6d46eaf597d81a1a2dee1a735c", null ],
     [ "onErrorMessage", "class_app_menu_bar.html#a1d0d1feea0902cc5100dba42708fab51", null ],
+    [ "onLanguageChanged", "class_app_menu_bar.html#aa1ae92207069625f1ad2426a0991ed8e", null ],
     [ "onSettingsChanged", "class_app_menu_bar.html#a328f183bf3eec5be37c6567ab7852f9d", null ]
 ];
